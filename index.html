@@ -30,10 +30,15 @@
     tr:hover td{background:rgba(255,255,255,0.09);}
     .danger{color:#f87171;font-weight:bold;} .good{color:#4ade80;font-weight:bold;}
     .warning{color:#fbbf24;font-weight:bold;} .muted{color:#94a3b8;}
+    .chip{padding:3px 8px;border-radius:6px;font-size:0.78rem;font-weight:bold;display:inline-block;}
+    .chip-blue{background:rgba(14,165,233,0.2);color:#38bdf8;}
     .xpbar{width:75px;background:#1e293b;border-radius:8px;height:11px;overflow:hidden;display:inline-block;vertical-align:middle;}
     .xpfill{height:100%;background:linear-gradient(90deg,#22c55e,#84cc16);transition:width 0.4s;}
     .badge-obs{display:inline-block;background:#ef4444;color:white;border-radius:8px;padding:2px 7px;font-size:0.73rem;font-weight:bold;animation:pulse 1s infinite alternate;}
     @keyframes pulse{from{opacity:1}to{opacity:0.5}}
+
+    .select-valoracion{padding:5px;border-radius:6px;font-weight:bold;border:1px solid #475569;background:#1e293b;color:white;cursor:pointer;}
+    .val-superior{color:#38bdf8;} .val-alto{color:#4ade80;} .val-basico{color:#f59e0b;} .val-bajo{color:#f87171;}
 
     /* Modales */
     .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.82);z-index:900;align-items:center;justify-content:center;}
@@ -57,13 +62,20 @@
     #errorMsg{color:#f87171;font-size:0.85rem;margin-top:8px;}
     #mainContent{display:none;}
 
-    /* Elementos de Notas */
-    .semana-header{background:rgba(14,165,233,0.15);border-left:4px solid #0ea5e9;padding:10px 16px;border-radius:8px;margin-bottom:12px;font-weight:bold;color:#38bdf8;display:flex;justify-content:space-between;align-items:center;}
-    .input-nota{width:55px;padding:4px;text-align:center;border-radius:6px;border:1px solid #475569;background:#1e293b;color:white;font-weight:bold;}
-    .evento-item{display:flex;gap:10px;align-items:flex-start;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.06);font-size:0.85rem;}
+    .evento-item{display:flex;gap:10px;align-items:flex-start;padding:8px;border-bottom:1px solid rgba(255,255,255,0.06);font-size:0.85rem;}
     .search-box{position:relative;display:inline-block;}
     .search-box input{padding-left:34px;}
     .search-icon{position:absolute;left:10px;top:50%;transform:translateY(-50%);color:#64748b;pointer-events:none;}
+
+    /* Reglas de Impresión Profesionales */
+    @media print {
+      body { background: white !important; color: black !important; padding: 0 !important; }
+      .container, .tabs, #loginOverlay, .modal-overlay:not(.show), .top-panel, button, select, input, #respaldoMsg { display: none !important; }
+      .modal-overlay.show { position: static !important; background: transparent !important; display: block !important; }
+      .modal-box { border: none !important; box-shadow: none !important; color: black !important; background: transparent !important; width: 100% !important; max-width: 100% !important; padding: 0 !important; }
+      .modal-box h2 { color: #000 !important; text-shadow: none !important; margin-bottom: 20px !important; }
+      #alertaMotivos { background: #f3f4f6 !important; border: 1px solid #cbd5e1 !important; color: black !important; padding: 15px !important; border-radius: 8px !important; }
+    }
   </style>
 </head>
 <body>
@@ -76,7 +88,7 @@
     <input type="password" id="pass1" placeholder="Código 1"/>
     <input type="password" id="pass2" placeholder="Código 2"/>
     <div id="errorMsg"></div>
-    <button class="btn-blue" style="width:100%;margin-top:14px;" onclick="verificarAcceso()">Ingresar</button>
+    <button class="btn-blue" style="width:100%;margin-top:14px;" onclick="verificarAccAccess()">Ingresar</button>
   </div>
 </div>
 
@@ -108,11 +120,10 @@
   <div class="modal-box modal-motivo modal-md">
     <h2 id="motivoTitulo">Selecciona el motivo</h2>
     <p id="motivoEstudiante" style="color:#94a3b8;"></p>
-    <p id="motivoMateria" style="color:#64748b;font-size:0.82rem;"></p>
     <div class="motivos-grid" id="motivosGrid"></div>
     <input type="text" id="otroTexto" class="otro-input" placeholder="Describe el motivo..." maxlength="80"/>
     <div style="display:flex;gap:8px;margin-top:12px;">
-      <button class="btn-gray" style="flex:1;" onclick="cerrarMotivo()">Cancelar</button>
+      <button class="btn-gray" style="flex:1;" onclick="cerrarModal('motivoModal')">Cancelar</button>
       <button id="btnConfirmarMotivo" class="btn-blue" style="flex:2;" onclick="confirmarMotivo()">✔ Confirmar</button>
     </div>
   </div>
@@ -156,7 +167,7 @@
       <select id="editGrado" style="width:100%;"></select>
     </div>
     <div style="display:flex;gap:8px;">
-      <button class="btn-gray" style="flex:1;" onclick="cerrarEdit()">Cancelar</button>
+      <button class="btn-gray" style="flex:1;" onclick="cerrarModal('editModal')">Cancelar</button>
       <button class="btn-blue" style="flex:2;" onclick="confirmarEdit()">💾 Guardar</button>
     </div>
   </div>
@@ -174,7 +185,7 @@
     <button class="tab active" onclick="mostrarPanel('registro',this)">📋 Registro diario</button>
     <button class="tab" onclick="movedToTab('eventos'); mostrarPanel('eventos',this)">📜 Eventos</button>
     <button class="tab" onclick="movedToTab('consolidado'); mostrarPanel('consolidado',this)">📊 Consolidado</button>
-    <button class="tab" onclick="movedToTab('notas'); mostrarPanel('notas',this)">📝 Planilla de Notas</button>
+    <button class="tab" onclick="movedToTab('notes'); mostrarPanel('notas',this)">📝 Planilla de Valoraciones</button>
     <button class="tab" onclick="movedToTab('config'); mostrarPanel('config',this)">⚙️ Config</button>
   </div>
 
@@ -208,7 +219,7 @@
       <table>
         <thead><tr>
           <th>#</th><th>Nombre</th><th>Grupo</th><th>Nivel</th><th>XP</th><th>Progreso</th>
-          <th>➕ Pos.</th><th>✱ Neg.</th><th>Estado</th><th>Asistencia hoy</th><th>Evasiones</th><th>Acciones</th>
+          <th>➕ Pos. Semana</th><th>✱ Neg. Hoy</th><th>Estado Asistencia</th><th>Control Hoy</th><th>Evasiones</th><th>Acciones</th>
         </tr></thead>
         <tbody id="cuerpoTabla"></tbody>
       </table>
@@ -220,25 +231,25 @@
     <div class="top-panel">
       <div class="search-box"><span class="search-icon">🔍</span><input type="text" id="busquedaEventos" placeholder="Buscar por nombre..." oninput="renderEventos()"/></div>
       <select id="filtroEventoGrupo" onchange="renderEventos()"></select>
-      <select id="filtroEventoTipo" onchange="renderEventEventos()"><option value="todos">Todos</option><option value="pos">Solo positivos</option><option value="neg">Solo negativos</option><option value="evasión">Solo evasiones</option></select>
+      <select id="filtroEventoTipo" onchange="renderEventos()"><option value="todos">Todos</option><option value="pos">Solo positivos</option><option value="neg">Solo negativos</option><option value="evasión">Solo evasiones</option></select>
       <select id="filtroEventoMateria" onchange="renderEventos()"><option value="todos">Todas las materias</option><option>Language</option><option>Mi Meta</option><option>Peace</option></select>
       <input type="date" id="filtroEventoFecha" onchange="renderEventos()"/>
       <button class="btn-gray" onclick="limpiarFiltros()">✕ Limpiar</button>
     </div>
-    <div id="eventosContent"></div>
+    <div id="eventosContent" style="background:rgba(255,255,255,0.02);border-radius:12px;padding:12px;max-height:500px;overflow-y:auto;"></div>
   </div>
 
   <!-- ══ CONSOLIDADO DE RECORRIDO ══ -->
   <div id="panel-consolidado" class="panel">
     <div class="top-panel">
-      <select id="filtroConsolidado"></select>
-      <button class="btn-blue" onclick="renderConsolidado()">🔍 Ver consolidado</button>
+      <select id="filtroConsolidado" onchange="renderConsolidado()"></select>
+      <button class="btn-blue" onclick="renderConsolidado()">🔍 Actualizar</button>
       <button class="btn-purple" onclick="exportarCSV()">⬇️ Exportar CSV</button>
     </div>
     <div id="consolidadoContent"></div>
   </div>
 
-  <!-- ══ NUEVO: PLANILLA DE CALIFICACIONES POR GRUPO ══ -->
+  <!-- ══ PLANILLA DE VALORACIONES POR GRUPO ══ -->
   <div id="panel-notas" class="panel">
     <div class="top-panel" style="background:rgba(255,255,255,0.04);padding:14px;border-radius:12px;">
       <select id="notasFiltroGrupo" onchange="renderPlanillaNotas()"></select>
@@ -247,10 +258,6 @@
         <option value="Mi Meta">Mi Meta</option>
         <option value="Peace">Peace</option>
       </select>
-      <div style="display:flex;align-items:center;gap:6px;font-size:0.88rem;">
-        <span>XP para Nota Max (5.0):</span>
-        <input type="number" id="xpMaxNota" value="300" style="width:75px;padding:6px;" onchange="renderPlanillaNotas()"/>
-      </div>
       <button class="btn-purple" onclick="exportarNotasCSV()">⬇️ Exportar Planilla CSV</button>
     </div>
     <div id="notasContent" class="table-wrap"></div>
@@ -285,6 +292,9 @@
 /* ══════════════════════════════════════════════════
     ESTADO GLOBAL Y PERSISTENCIA
 ══════════════════════════════════════════════════ */
+const MOTIVOS_POS = ["Trabajo en clase", "Participación destacada", "Liderazgo de equipo", "Aporte creativo", "Buen comportamiento", "Otro positivo..."];
+const MOTIVOS_NEG = ["Indisciplina", "Falta de atención", "No trabaja en clase", "Incumplimiento de tareas", "Uso indebido de tecnología", "Otro negativo..."];
+
 let GRUPOS = JSON.parse(localStorage.getItem('ag_grupos')) || ['4-1','6-1','6-2','7-1','7-2','8-1'];
 let umbrales = JSON.parse(localStorage.getItem('ag_umbrales')) || {'4-1':5,'6-1':10,'6-2':7,'7-1':6,'7-2':6,'8-1':5};
 let notasManuales = JSON.parse(localStorage.getItem('ag_notas_manuales')) || {}; 
@@ -296,7 +306,7 @@ let registros = [];
 let _motivoPendiente = null;
 let _motivoSeleccionado = null;
 
-function verificarAcceso() {
+function verificarAccAccess() {
   if (document.getElementById('pass1').value===PASS1 && document.getElementById('pass2').value===PASS2) {
     document.getElementById('loginOverlay').style.display = 'none';
     document.getElementById('mainContent').style.display  = 'block';
@@ -350,7 +360,7 @@ function actualizarSelectsGrupos() {
 }
 
 /* ══════════════════════════════════════════════════
-    LÓGICA DEL PANEL DE REGISTRO DIARIO
+    REGISTRO DIARIO Y ASISTENCIA
 ══════════════════════════════════════════════════ */
 function renderTabla() {
   const cuerpo = document.getElementById('cuerpoTabla');
@@ -363,28 +373,40 @@ function renderTabla() {
     if (busqueda && !est.nombre.toLowerCase().includes(busqueda)) return;
     
     const max = est.xp < 100 ? 100 : (est.xp < 300 ? 300 : 600);
-    const nHoy = registros.filter(r => r.estudianteId === est.id && r.tipo === 'neg' && r.fecha === hoy()).length;
     
+    const nHoyNeg = registros.filter(r => r.estudianteId === est.id && r.tipo === 'neg' && r.fecha === hoy()).length;
+    const nSemanaPos = registros.filter(r => r.estudianteId === est.id && r.tipo === 'pos' && !r.archivado).length;
+    const nSemanaEvas = registros.filter(r => r.estudianteId === est.id && r.tipo === 'evasión' && !r.archivado).length;
+
+    est.posSemana = nSemanaPos;
+    est.evasionesSemana = nSemanaEvas;
+    
+    let txtAsistencia = '<span class="muted">Sin marcar</span>';
+    if(est.asistenciaHoy === 'presente') txtAsistencia = '<span class="good">✓ Presente</span>';
+    if(est.asistenciaHoy === 'ausente') txtAsistencia = '<span class="danger">✕ Ausente</span>';
+    if(est.asistenciaHoy === 'justificada') txtAsistencia = '<span class="warning">✓ Justificada</span>';
+
     cuerpo.innerHTML += `<tr>
       <td>${idx + 1}</td>
       <td style="text-align:left; font-weight:bold; cursor:pointer; color:#38bdf8;" onclick="abrirEditar(${idx})">✏️ ${est.nombre}</td>
       <td><span class="chip chip-blue">${est.grado}</span></td>
-      <td>${est.xp < 100 ? '🐣 Novato' : '🌱 Aprendiz'}</td>
+      <td>${est.xp < 100 ? '🐣 Novato' : (est.xp < 300 ? '🌱 Aprendiz' : '🏆 Maestro')}</td>
       <td><b>${est.xp || 0}</b></td>
       <td><div class="xpbar"><div class="xpfill" style="width:${Math.min(100, ((est.xp||0)/max)*100)}%;"></div></div></td>
-      <td><span class="good">${est.posSemana || 0}</span></td>
-      <td><span class="${nHoy>=3?'badge-obs':'danger'}">${nHoy}</span></td>
-      <td>${est.asistenciaHoy==='presente'?'<span class="good">✓ Presente</span>':(est.asistenciaHoy==='ausente'?'<span class="danger">✕ Ausente</span>':'<span class="muted">Sin marcar</span>')}</td>
+      <td><span class="good">${est.posSemana}</span></td>
+      <td><span class="${nHoyNeg>=3?'badge-obs':'danger'}">${nHoyNeg}</span></td>
+      <td>${txtAsistencia}</td>
       <td>
-        <button class="btn-green" style="padding:3px 7px;" onclick="marcarAsistencia(${idx},'presente')">✓</button>
-        <button class="btn-red" style="padding:3px 7px;" onclick="marcarAsistencia(${idx},'ausente')">✕</button>
-        <button class="btn-gray" style="padding:3px 7px;" onclick="marcarAsistencia(${idx},'')">🗑️</button>
+        <button class="btn-green" style="padding:3px 7px; font-size:0.75rem;" title="Presente" onclick="marcarAsistencia(${idx},'presente')">✓</button>
+        <button class="btn-red" style="padding:3px 7px; font-size:0.75rem;" title="Ausente" onclick="marcarAsistencia(${idx},'ausente')">✕</button>
+        <button class="btn-amber" style="padding:3px 7px; font-size:0.75rem;" title="Justificada" onclick="marcarAsistencia(${idx},'justificada')">AJ</button>
+        <button class="btn-gray" style="padding:3px 7px; font-size:0.75rem;" title="Limpiar" onclick="marcarAsistencia(${idx},'')">🗑️</button>
       </td>
-      <td><span class="warning">${est.evasionesSemana || 0}</span></td>
+      <td><span class="warning">${est.evasionesSemana}</span></td>
       <td>
-        <select style="padding:2px;font-size:0.75rem;" onchange="if(this.value){ clickPuntos(${idx},'pos',this.value); this.value=''; }"><option value="">➕ Pos</option><option>Language</option><option>Mi Meta</option><option>Peace</option></select>
-        <select style="padding:2px;font-size:0.75rem;" onchange="if(this.value){ clickPuntos(${idx},'neg',this.value); this.value=''; }"><option value="">✱ Neg</option><option>Language</option><option>Mi Meta</option><option>Peace</option></select>
-        <button class="btn-gray" style="padding:2px 5px;font-size:0.75rem;background:#b45309;" onclick="clickPuntos(${idx},'evasión','General')">🚶 Evasión</button>
+        <select style="padding:2px;font-size:0.75rem;" onchange="if(this.value){ lanzarSelectorMotivo(${idx},'pos',this.value); this.value=''; }"><option value="">➕ Pos</option><option value="Language">Language</option><option value="Mi Meta">Mi Meta</option><option value="Peace">Peace</option></select>
+        <select style="padding:2px;font-size:0.75rem;" onchange="if(this.value){ lanzarSelectorMotivo(${idx},'neg',this.value); this.value=''; }"><option value="">✱ Neg</option><option value="Language">Language</option><option value="Mi Meta">Mi Meta</option><option value="Peace">Peace</option></select>
+        <button class="btn-gray" style="padding:2px 5px;font-size:0.75rem;background:#b45309;" onclick="lanzarSelectorMotivo(${idx},'evasión','General')">🚶 Evasión</button>
       </td>
     </tr>`;
   });
@@ -398,20 +420,208 @@ function agregarEstudiante() {
   const nom = document.getElementById('nombreInput').value.trim();
   const gra = document.getElementById('gradoInput').value;
   if(!nom || !gra) return;
-  estudiantes.push({ id:'est_'+Date.now(), nombre:nom, grado:gra, xp:0, posSemana:0, evasionesSemana:0, asistenciaHoy:"" });
+  estudiantes.push({ id:'est_'+Date.now()+Math.floor(Math.random()*1000), nombre:nom, grado:gra, xp:0, posSemana:0, evasionesSemana:0, asistenciaHoy:"" });
   document.getElementById('nombreInput').value=''; guardar(); renderTabla();
 }
 
+function lanzarSelectorMotivo(idx, tipo, materia) {
+  const est = estudiantes[idx];
+  _motivoPendiente = { est, idx, tipo, materia };
+  
+  if (tipo === 'evasión') {
+    registros.push({ id:'reg_'+Date.now(), estudianteId:est.id, nombre:est.nombre, grado:est.grado, tipo:'evasión', materia:'General', motivo:'Evasión de clase / salida sin permiso', fecha:hoy() });
+    est.evasionesSemana = (est.evasionesSemana || 0) + 1;
+    guardar(); renderTabla(); return;
+  }
+
+  document.getElementById('motivoTitulo').textContent = tipo==='pos'?'➕ Seleccionar Motivo Positivo':'✱ Seleccionar Motivo Negativo';
+  document.getElementById('motivoEstudiante').textContent = `${est.nombre} (${est.grado}) — Área: ${materia}`;
+  
+  const grid = document.getElementById('motivosGrid'); grid.innerHTML = ''; _motivoSeleccionado = null;
+  document.getElementById('otroTexto').style.display = 'none';
+  document.getElementById('otroTexto').value = '';
+
+  const lista = tipo==='pos'?MOTIVOS_POS:MOTIVOS_NEG;
+  
+  lista.forEach(m => {
+    const btn = document.createElement('button'); btn.className = 'btn-motivo'; btn.textContent = m;
+    btn.type = "button";
+    btn.onclick = () => {
+      document.querySelectorAll('.btn-motivo').forEach(b=>b.classList.remove('pos-sel','neg-sel'));
+      btn.classList.add(tipo==='pos'?'pos-sel':'neg-sel'); _motivoSeleccionado = m;
+      document.getElementById('otroTexto').style.display = m.includes('Otro')?'block':'none';
+    };
+    grid.appendChild(btn);
+  });
+  abrirModal('motivoModal');
+}
+
+function confirmarMotivo() {
+  if(!_motivoSeleccionado) { alert('Por favor selecciona una opción de la lista.'); return; }
+  let mot = _motivoSeleccionado;
+  if(mot.includes('Otro')) { 
+    mot = '✏️ ' + document.getElementById('otroTexto').value.trim(); 
+    if(mot === '✏️ ') { alert('Por favor escribe la descripción del motivo.'); return; }
+  }
+  cerrarModal('motivoModal');
+  
+  const p = _motivoPendiente;
+  registros.push({ id:'reg_'+Date.now(), estudianteId:p.est.id, nombre:p.est.nombre, grado:p.est.grado, tipo:p.tipo, materia:p.materia, motivo:mot, fecha:hoy() });
+  
+  if(p.tipo==='pos') {
+    p.est.xp = (p.est.xp || 0) + 10;
+    p.est.posSemana = registros.filter(r => r.estudianteId === p.est.id && r.tipo === 'pos' && !r.archivado).length;
+    if(p.est.posSemana === (umbrales[p.est.grado]||5)) triggerReconocimiento(p.est);
+  } else if(p.tipo==='neg') {
+    p.est.xp = Math.max(0, (p.est.xp || 0) - 5);
+    const nHoy = registros.filter(r=>r.estudianteId===p.est.id && r.tipo==='neg' && r.fecha===hoy()).length;
+    if(nHoy === 3) triggerObservador(p.est);
+  }
+  guardar(); renderTabla();
+}
+
 /* ══════════════════════════════════════════════════
-    NUEVO MÓDULO: PLANILLA DE CALIFICACIONES REALES
+    MÓDULO DE LOGS DE EVENTOS
+══════════════════════════════════════════════════ */
+function renderEventos() {
+  const div = document.getElementById('eventosContent');
+  const busqueda = document.getElementById('busquedaEventos').value.toLowerCase();
+  const grupo = document.getElementById('filtroEventoGrupo').value;
+  const tipo = document.getElementById('filtroEventoTipo').value;
+  const materia = document.getElementById('filtroEventoMateria').value;
+  const fecha = document.getElementById('filtroEventoFecha').value;
+
+  div.innerHTML = '';
+  const filtrados = registros.filter(r => {
+    if(busqueda && !r.nombre.toLowerCase().includes(busqueda)) return false;
+    if(grupo !== 'todos' && r.grado !== grupo) return false;
+    if(tipo !== 'todos' && r.tipo !== tipo) return false;
+    if(materia !== 'todos' && r.materia !== materia) return false;
+    if(fecha && r.fecha !== fecha) return false;
+    return true;
+  });
+
+  if(filtrados.length === 0) {
+    div.innerHTML = '<p class="muted" style="text-align:center;padding:20px;">No se encontraron registros con los filtros seleccionados.</p>';
+    return;
+  }
+
+  [...filtrados].reverse().forEach(r => {
+    let tag = r.tipo==='pos'?'<span class="good">[+]</span>':(r.tipo==='neg'?'<span class="danger">[*]</span>':'<span class="warning">[🚶]</span>');
+    div.innerHTML += `<div class="evento-item">
+      <span>${tag}</span>
+      <div style="flex:1;">
+        <b>${r.nombre}</b> (${r.grado}) — <span style="color:#38bdf8;">${r.materia}</span>: <i>${r.motivo}</i>
+        <div style="font-size:0.75rem;color:#64748b;">Fecha log: ${r.fecha} ${r.archivado ? '📦 (Archivado)' : ''}</div>
+      </div>
+      <button class="btn-red" style="padding:2px 6px;font-size:0.75rem;" onclick="eliminarRegistro('${r.id}')">🗑️</button>
+    </div>`;
+  });
+}
+
+function eliminarRegistro(id) {
+  if(confirm('¿Deseas remover este evento de la bitácora? Esto recalculará los puntos del estudiante.')) {
+    const regAEliminar = registros.find(r => r.id === id);
+    if(regAEliminar) {
+      const est = estudiantes.find(e => e.id === regAEliminar.estudianteId);
+      if(est) {
+        if(regAEliminar.tipo === 'pos') {
+          est.xp = Math.max(0, (est.xp || 0) - 10);
+        } else if(regAEliminar.tipo === 'neg') {
+          est.xp = (est.xp || 0) + 5;
+        }
+      }
+    }
+    registros = registros.filter(r => r.id !== id);
+    guardar();
+    renderTabla();
+    renderEventos();
+  }
+}
+
+function limpiarFiltros() {
+  document.getElementById('busquedaEventos').value = '';
+  document.getElementById('filtroEventoGrupo').value = 'todos';
+  document.getElementById('filtroEventoTipo').value = 'todos';
+  document.getElementById('filtroEventoMateria').value = 'todos';
+  document.getElementById('filtroEventoFecha').value = '';
+  renderEventos();
+}
+
+/* ══════════════════════════════════════════════════
+    MÓDULO CONSOLIDADO DE RECORRIDO
+══════════════════════════════════════════════════ */
+function renderConsolidado() {
+  const div = document.getElementById('consolidadoContent');
+  const grupo = document.getElementById('filtroConsolidado').value;
+  div.innerHTML = '';
+
+  let filtrados = estudiantes;
+  if(grupo !== 'todos') {
+    filtrados = estudiantes.filter(e => e.grado === grupo);
+  }
+
+  if(filtrados.length === 0) {
+    div.innerHTML = '<p class="muted">No hay datos de estudiantes cargados.</p>';
+    return;
+  }
+
+  let html = `<table>
+    <thead>
+      <tr>
+        <th>Estudiante</th>
+        <th>Grupo</th>
+        <th>XP Acumulados</th>
+        <th>Positivos (Semana)</th>
+        <th>Evasiones (Semana)</th>
+        <th>Asistencia Hoy</th>
+      </tr>
+    </thead>
+    <tbody>`;
+
+  filtrados.forEach(e => {
+    let asist = '—';
+    if(e.asistenciaHoy==='presente') asist = '✓ Presente';
+    if(e.asistenciaHoy==='ausente') asist = '✕ Ausente';
+    if(e.asistenciaHoy==='justificada') asist = '✓ Justificada';
+
+    const pSem = registros.filter(r => r.estudianteId === e.id && r.tipo === 'pos' && !r.archivado).length;
+    const eVas = registros.filter(r => r.estudianteId === e.id && r.tipo === 'evasión' && !r.archivado).length;
+
+    html += `<tr>
+      <td style="text-align:left;font-weight:bold;">${e.nombre}</td>
+      <td><span class="chip chip-blue">${e.grado}</span></td>
+      <td><b>${e.xp || 0} XP</b></td>
+      <td><span class="good">${pSem}</span></td>
+      <td><span class="warning">${eVas}</span></td>
+      <td>${asist}</td>
+    </tr>`;
+  });
+
+  html += '</tbody></table>';
+  div.innerHTML = html;
+}
+
+function exportarCSV() {
+  let csv = "Estudiante,Grupo,XP,PositivosSemana,EvasionesSemana,AsistenciaHoy\n";
+  estudiantes.forEach(e => {
+    const pSem = registros.filter(r => r.estudianteId === e.id && r.tipo === 'pos' && !r.archivado).length;
+    const eVas = registros.filter(r => r.estudianteId === e.id && r.tipo === 'evasión' && !r.archivado).length;
+    csv += `"${e.nombre}",${e.grado},${e.xp||0},${pSem},${eVas},"${e.asistenciaHoy||''}"\n`;
+  });
+  const blob = new Blob([csv], {type:'text/csv;charset=utf-8;'});
+  const a = document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='Consolidado_AulaGame.csv'; a.click();
+}
+
+/* ══════════════════════════════════════════════════
+    PLANILLA DE VALORACIONES (SUPERIOR, ALTO, BÁSICO, BAJO)
 ══════════════════════════════════════════════════ */
 function renderPlanillaNotas() {
   const div = document.getElementById('notasContent');
   const grupo = document.getElementById('notasFiltroGrupo').value;
   const materia = document.getElementById('notasFiltroMateria').value;
-  const xpMax = parseFloat(document.getElementById('xpMaxNota').value) || 300;
 
-  if(!grupo || grupo==='todos') { div.innerHTML='<p class="muted">Selecciona un grupo específico para ver sus notas.</p>'; return; }
+  if(!grupo || grupo==='todos') { div.innerHTML='<p class="muted">Selecciona un grupo específico para ver sus valoraciones.</p>'; return; }
   
   const filtrados = estudiantes.filter(e => e.grado === grupo);
   if(filtrados.length === 0) { div.innerHTML='<p class="muted">No hay estudiantes en este grupo.</p>'; return; }
@@ -420,40 +630,34 @@ function renderPlanillaNotas() {
     <thead>
       <tr>
         <th style="text-align:left;">Estudiante</th>
-        <th>XP Total</th>
-        <th>Nota Juego (70%)</th>
-        <th>Nota Taller (15%)</th>
-        <th>Nota Evaluación (15%)</th>
-        <th>Nota Definitiva</th>
+        <th>XP Acumulados</th>
+        <th>Valoración en el Área (${materia})</th>
       </tr>
     </thead>
     <tbody>`;
 
   filtrados.forEach(e => {
-    // Cálculo nota de juego: Máximo 5.0 basado en regla de 3 con los XP acumulados
-    let notaJuego = (e.xp / xpMax) * 5;
-    if(notaJuego > 5) notaJuego = 5;
-    if(notaJuego < 1) notaJuego = 1.0; // Piso mínimo pedagógico
-    notaJuego = parseFloat(notaJuego.toFixed(2));
+    const keyVal = `${e.id}_${materia}_valoracion`;
+    const actualVal = notasManuales[keyVal] || "";
 
-    // Cargar notas manuales guardadas en caché
-    const keyTaller = `${e.id}_${materia}_taller`;
-    const keyEval   = `${e.id}_${materia}_eval`;
-    const nTaller = notasManuales[keyTaller] || "";
-    const nEval   = notasManuales[keyEval] || "";
-
-    // Calcular el promedio definitivo ponderado
-    const valTaller = parseFloat(nTaller) || 1.0;
-    const valEval   = parseFloat(nEval) || 1.0;
-    const definitiva = (notaJuego * 0.70) + (valTaller * 0.15) + (valEval * 0.15);
+    let colorClase = "muted";
+    if(actualVal === "Superior") colorClase = "val-superior";
+    if(actualVal === "Alto") colorClase = "val-alto";
+    if(actualVal === "Básico") colorClase = "val-basico";
+    if(actualVal === "Bajo") colorClase = "val-bajo";
 
     html += `<tr>
       <td style="text-align:left;font-weight:bold;">${e.nombre}</td>
       <td><span class="chip chip-blue">${e.xp} XP</span></td>
-      <td><b style="color:#38bdf8;">${notaJuego.toFixed(2)}</b></td>
-      <td><input type="number" step="0.1" min="1" max="5" class="input-nota" value="${nTaller}" onchange="guardarNotaManual('${e.id}','${materia}','taller',this.value)"/></td>
-      <td><input type="number" step="0.1" min="1" max="5" class="input-nota" value="${nEval}" onchange="guardarNotaManual('${e.id}','${materia}','eval',this.value)"/></td>
-      <td><span class="${definitiva>=3.5?'good':'danger'}" style="font-size:1rem;">${definitiva.toFixed(2)}</span></td>
+      <td>
+        <select class="select-valoracion ${colorClase}" onchange="guardarValoracionManual('${e.id}','${materia}',this.value)">
+          <option value="" ${actualVal===''?'selected':''}>— Sin asignar —</option>
+          <option value="Superior" class="val-superior" ${actualVal==='Superior'?'selected':''}>Superior</option>
+          <option value="Alto" class="val-alto" ${actualVal==='Alto'?'selected':''}>Alto</option>
+          <option value="Básico" class="val-basico" ${actualVal==='Básico'?'selected':''}>Básico</option>
+          <option value="Bajo" class="val-bajo" ${actualVal==='Bajo'?'selected':''}>Bajo</option>
+        </select>
+      </td>
     </tr>`;
   });
 
@@ -461,14 +665,12 @@ function renderPlanillaNotas() {
   div.innerHTML = html;
 }
 
-function guardarNotaManual(estId, materia, tipo, valor) {
-  const key = `${estId}_${materia}_${tipo}`;
-  if(valor === "" || isNaN(valor)) {
+function guardarValoracionManual(estId, materia, valor) {
+  const key = `${estId}_${materia}_valoracion`;
+  if(valor === "") {
     delete notasManuales[key];
   } else {
-    let num = parseFloat(valor);
-    if(num > 5) num = 5; if(num < 1) num = 1;
-    notasManuales[key] = num.toFixed(1);
+    notasManuales[key] = valor;
   }
   guardar();
   renderPlanillaNotas();
@@ -477,28 +679,21 @@ function guardarNotaManual(estId, materia, tipo, valor) {
 function exportarNotasCSV() {
   const grupo = document.getElementById('notasFiltroGrupo').value;
   const materia = document.getElementById('notasFiltroMateria').value;
-  const xpMax = parseFloat(document.getElementById('xpMaxNota').value) || 300;
   
-  let csv = `Planilla de Calificaciones - Grupo ${grupo} - Area ${materia}\n`;
-  csv += "Estudiante,XP,Nota Juego (70%),Nota Taller (15%),Nota Eval (15%),Definitiva\n";
+  let csv = `Planilla de Valoraciones - Grupo ${grupo} - Area ${materia}\n`;
+  csv += "Estudiante,XP,Valoracion\n";
 
   estudiantes.filter(e => e.grado === grupo).forEach(e => {
-    let notaJuego = Math.min(5, Math.max(1, (e.xp / xpMax) * 5));
-    const nTaller = parseFloat(notasManuales[`${e.id}_${materia}_taller`]) || 1.0;
-    const nEval = parseFloat(notasManuales[`${e.id}_${materia}_eval`]) || 1.0;
-    const def = (notaJuego * 0.70) + (nTaller * 0.15) + (nEval * 0.15);
-    csv += `"${e.nombre}",${e.xp},${notaJuego.toFixed(2)},${nTaller.toFixed(1)},${nEval.toFixed(1)},${def.toFixed(2)}\n`;
+    const val = notasManuales[`${e.id}_${materia}_valoracion`] || "Sin asignar";
+    csv += `"${e.nombre}",${e.xp},"${val}"\n`;
   });
 
   const blob = new Blob([csv], {type:'text/csv;charset=utf-8;'});
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(blob);
-  a.download = `Notas_${grupo}_${materia}.csv`;
-  a.click();
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `Valoraciones_${grupo}_${materia}.csv`; a.click();
 }
 
 /* ══════════════════════════════════════════════════
-    GESTIÓN DE GRUPOS (ARREGLADO CORRECCIÓN)
+    GESTIÓN DE CONFIGURACIÓN Y GRUPOS
 ══════════════════════════════════════════════════ */
 function renderConfig() {
   const list = document.getElementById('listaGrupos');
@@ -537,47 +732,18 @@ function eliminarGrupo(g){
   }
 }
 
-/* ══════════════════════════════════════════════════
-    PUNTOS INTERACTIVOS (LÓGICA ANTERIOR COMPLETADA)
-══════════════════════════════════════════════════ */
-function clickPuntos(idx, tipo, materia) {
-  const est = estudiantes[idx];
-  _motivoPendiente = { est, idx, tipo, materia };
-  document.getElementById('motivoTitulo').textContent = tipo==='pos'?'➕ Positivo':'✱ Negativo';
-  document.getElementById('motivoEstudiante').textContent = est.nombre;
-  
-  const grid = document.getElementById('motivosGrid'); grid.innerHTML = ''; _motivoSeleccionado = null;
-  const lista = tipo==='pos'?MOTIVOS_POS:MOTIVOS_NEG;
-  
-  lista.forEach(m => {
-    const btn = document.createElement('button'); btn.className = 'btn-motivo'; btn.textContent = m;
-    btn.onclick = () => {
-      document.querySelectorAll('.btn-motivo').forEach(b=>b.classList.remove('pos-sel','neg-sel'));
-      btn.classList.add(tipo==='pos'?'pos-sel':'neg-sel'); _motivoSeleccionado = m;
-      document.getElementById('otroTexto').style.display = m.includes('Otro')?'block':'none';
-    };
-    grid.appendChild(btn);
-  });
-  abrirModal('motivoModal');
+/* MODALES AUXILIARES */
+function triggerObservador(est) {
+  document.getElementById('alertaNombre').textContent = est.nombre;
+  document.getElementById('alertaGrado').textContent = `Grupo: ${est.grado}`;
+  const motivosHoy = registros.filter(r=>r.estudianteId===est.id && r.tipo==='neg' && r.fecha===hoy()).map(r=>`• [${r.materia}] ${r.motivo}`);
+  document.getElementById('alertaMotivos').innerHTML = motivosHoy.join('<br>');
+  abrirModal('alertaModal');
 }
-
-function confirmarMotivo() {
-  if(!_motivoSeleccionado) return;
-  let mot = _motivoSeleccionado;
-  if(mot.includes('Otro')) { mot = '✏️ ' + document.getElementById('otroTexto').value; }
-  cerrarModal('motivoModal');
-  
-  const p = _motivoPendiente;
-  registros.push({ id:'reg_'+Date.now(), estudianteId:p.est.id, nombre:p.est.nombre, grado:p.est.grado, tipo:p.tipo, materia:p.materia, motivo:mot, fecha:hoy() });
-  
-  if(p.tipo==='pos') {
-    p.est.xp += 10; p.est.posSemana += 1;
-    if(p.est.posSemana === (umbrales[p.est.grado]||5)) triggerReconocimiento(p.est);
-  } else {
-    p.est.xp = Math.max(0, p.est.xp - 5);
-    if(registros.filter(r=>r.estudianteId===p.est.id && r.tipo==='neg' && r.fecha===hoy()).length === 3) triggerObservador(p.est);
-  }
-  guardar(); renderTabla();
+function triggerReconocimiento(est) {
+  document.getElementById('recNombre').textContent = est.nombre;
+  document.getElementById('recGrado').textContent = `Grupo: ${est.grado} — ¡Llegó al umbral de la semana!`;
+  abrirModal('recModal');
 }
 
 function abrirEditar(idx) {
@@ -593,42 +759,127 @@ function confirmarEdit() {
   cerrarModal('editModal'); guardar(); renderTabla();
 }
 
-/* MODALES ACCIONES */
 function abrirModal(id){ document.getElementById(id).classList.add('show'); }
 function cerrarModal(id){ document.getElementById(id).classList.remove('show'); }
 function cerrarBienvenida(){ localStorage.setItem('ag_bienvenida_visto','true'); cerrarModal('bienvenidaModal'); }
 function abrirSalir(){ abrirModal('salirModal'); }
 function cerrarSalir(){ cerrarModal('salirModal'); document.getElementById('loginOverlay').style.display='flex'; document.getElementById('mainContent').style.display='none'; }
 function exportarYSalir(){ exportarRespaldo(); cerrarSalir(); }
+function cerrarAlerta(){ cerrarModal('alertaModal'); }
+function cerrarRec(){ cerrarModal('recModal'); }
 function guardarUmbrales(){ GRUPOS.forEach(g=>{ umbrales[g]=parseInt(document.getElementById(`umb-${g}`).value)||5; }); localStorage.setItem('ag_umbrales',JSON.stringify(umbrales)); alert('Umbrales guardados.'); }
 function cambiarCredenciales(){ PASS1=document.getElementById('newPass1').value; PASS2=document.getElementById('newPass2').value; localStorage.setItem('ag_p1',PASS1); localStorage.setItem('ag_p2',PASS2); alert('Credenciales actualizadas.'); }
-function resetearSemana(){ estudiantes.forEach(e=>{e.posSemana=0;e.evasionesSemana=0;e.asistenciaHoy=""}); guardar(); renderTabla(); }
-function resetearTodo(){ estudiantes=[]; registros=[]; guardar(); renderTabla(); }
 
-/* RESTO DE LOGICA COMPLEMENTARIA DE DESCARGAS */
+function resetearSemana(){ 
+  if(confirm('¿Deseas reiniciar los contadores de la semana? Los registros históricos en la bitácora se mantendrán archivados.')) { 
+    registros.forEach(r => r.archivado = true);
+    estudiantes.forEach(e=>{e.posSemana=0;e.evasionesSemana=0;e.asistenciaHoy=""}); 
+    guardar(); renderTabla(); 
+  } 
+}
+function resetearTodo(){ if(confirm('¿Seguro quieres borrar todos los datos locales?')){ estudiantes=[]; registros=[]; notasManuales={}; guardar(); renderTabla(); } }
+
+/* SOPORTE DE ARCHIVOS E IMPRESIONES */
 function descargarPlantilla() {
-  const blob = new Blob(["Nombre,Grupo\nJuan Perez,6-1"], {type:'text/csv'});
+  const blob = new Blob(["Nombre,Grupo\n\"Perez, Juan\",6-1"], {type:'text/csv'});
   const a = document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='plantilla.csv'; a.click();
 }
+
+// Lector de CSV inmune a errores de comillas internas
+function parsearLineaCSV(linea) {
+  const resultado = [];
+  let CeldaActual = '';
+  let dentroDeComillas = false;
+  for (let i = 0; i < linea.length; i++) {
+    const char = linea[i];
+    if (char === '"') {
+      dentroDeComillas = !dentroDeComillas;
+    } else if (char === ',' && !dentroDeComillas) {
+      resultado.push(CeldaActual.trim());
+      CeldaActual = '';
+    } else {
+      CeldaActual += char;
+    }
+  }
+  resultado.push(CeldaActual.trim());
+  return resultado;
+}
+
 function importarCSV(e) {
   const file = e.target.files[0]; if(!file) return;
   const r = new FileReader();
   r.onload = function(evt) {
-    evt.target.result.split('\n').slice(1).forEach(line => {
-      const cols = line.split(',');
-      if(cols.length>=2 && cols[0].trim()) estudiantes.push({ id:'est_'+Date.now()+Math.random(), nombre:cols[0].trim(), grado:cols[1].trim(), xp:0, posSemana:0, evasionesSemana:0, asistenciaHoy:"" });
+    const lineas = evt.target.result.split(/\r?\n/);
+    let importados = 0;
+    let gruposNuevosDetectados = false;
+
+    lineas.slice(1).forEach((line, index) => {
+      if(!line.trim()) return; 
+      
+      const cols = parsearLineaCSV(line);
+      
+      if(cols.length >= 2 && cols[0]) {
+        const uniqueId = 'est_' + Date.now() + '_' + index + '_' + Math.floor(Math.random()*100);
+        const grupoFormateado = cols[1].toUpperCase();
+        
+        // Auto-detección de grupos nuevos
+        if(!GRUPOS.includes(grupoFormateado)) {
+          GRUPOS.push(grupoFormateado);
+          umbrales[grupoFormateado] = 5; // Asigna umbral inicial por defecto
+          gruposNuevosDetectados = true;
+        }
+
+        estudiantes.push({ 
+          id: uniqueId, 
+          nombre: cols[0], 
+          grado: grupoFormateado, 
+          xp: 0, 
+          posSemana: 0, 
+          evasionesSemana: 0, 
+          asistenciaHoy: "" 
+        });
+        importados++;
+      }
     });
-    guardar(); renderTabla(); alert('Lista importada.');
-  }; r.readAsText(file);
+
+    if(gruposNuevosDetectados) {
+      localStorage.setItem('ag_grupos', JSON.stringify(GRUPOS));
+      localStorage.setItem('ag_umbrales', JSON.stringify(umbrales));
+      actualizarSelectsGrupos();
+    }
+
+    guardar(); renderTabla(); alert(`Se importaron ${importados} estudiantes con éxito.`);
+  }; r.readAsText(file, 'UTF-8');
 }
+
 function restaurarRespaldoBienvenida(e){
   const file=e.target.files[0]; if(!file) return;
-  const r=new FileReader(); r.onload=function(evt){ const d=JSON.parse(evt.target.result); if(d.estudiantes){ estudiantes=d.estudiantes; registros=d.registros||[]; guardar(); renderTabla(); cerrarBienvenida(); } }; r.readAsText(file);
+  const r=new FileReader(); r.onload=function(evt){ 
+    const d=JSON.parse(evt.target.result); 
+    if(d.estudiantes){ 
+      estudiantes=d.estudiantes; 
+      registros=d.registros||[]; 
+      notasManuales=d.notasManuales||{}; 
+      if(d.grupos) {
+        GRUPOS = d.grupos;
+        localStorage.setItem('ag_grupos', JSON.stringify(GRUPOS));
+      }
+      if(d.umbrales) {
+        umbrales = d.umbrales;
+        localStorage.setItem('ag_umbrales', JSON.stringify(umbrales));
+      }
+      actualizarSelectsGrupos();
+      guardar(); renderTabla(); cerrarBienvenida(); 
+    } 
+  }; r.readAsText(file);
 }
-exportarRespaldo = function() {
-  const blob = new Blob([JSON.stringify({estudiantes,registros,notasManuales})], {type:'application/json'});
+
+function exportarRespaldo() {
+  const blob = new Blob([JSON.stringify({estudiantes, registros, notasManuales, grupos: GRUPOS, umbrales})], {type:'application/json'});
   const a = document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='AulaGame_Respaldo.json'; a.click();
-};
+}
+function imprimirObservador(){ window.print(); }
+function imprimirReconocimiento(){ window.print(); }
 </script>
 </body>
 </html>
