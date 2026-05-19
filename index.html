@@ -1016,7 +1016,8 @@ function renderEventos() {
       </span></div>`;
     evs.forEach(r=>{
       const neg=r.tipo==='neg';
-      html+=`<div class="evento-item">
+      const idxRegistro = registros.indexOf(r);
+      html+=`<div class="evento-item" style="position:relative;">
         <div class="evento-tipo">${neg?'✱':'➕'}</div>
         <div class="evento-info">
           <span style="font-weight:bold;color:${neg?'#f87171':'#4ade80'};">${r.nombre}</span>
@@ -1025,12 +1026,50 @@ function renderEventos() {
           <br><span>${r.motivo}</span>
           <div class="evento-meta">🕐 ${r.hora} &nbsp;·&nbsp; ${r.semana}</div>
         </div>
+        <button class="btn-gray" style="padding:4px 8px;font-size:0.7rem;position:absolute;right:0;top:50%;transform:translateY(-50%);" onclick="eliminarEvento(${idxRegistro})" title="Eliminar evento">🗑️</button>
       </div>`;
     });
     html+='<div style="height:14px;"></div>';
   });
   div.innerHTML=html;
 }
+function eliminarEvento(idx) {
+  const evento = registros[idx];
+  if (!confirm(`¿Eliminar el evento de ${evento.nombre} (${evento.motivo})? Esta acción no se puede deshacer.`)) return;
+  
+  // Si es un positivo, restar XP y positivos semanales
+  if (evento.tipo === 'pos') {
+    const est = estudiantes.find(e => e.id === evento.estudianteId);
+    if (est) {
+      est.xp = Math.max(0, (est.xp || 0) - 10);
+      est.posSemanales = Math.max(0, (est.posSemanales || 0) - 1);
+    }
+  }
+  
+  // Si es un negativo, restar del contador del día
+  if (evento.tipo === 'neg') {
+    const est = estudiantes.find(e => e.id === evento.estudianteId);
+    if (est && est.negHoy) {
+      est.negHoy[evento.fecha] = Math.max(0, (est.negHoy[evento.fecha] || 0) - 1);
+    }
+  }
+  
+  // Si es evasión, restar
+  if (evento.tipo === 'evasion') {
+    const est = estudiantes.find(e => e.id === evento.estudianteId);
+    if (est) {
+      est.evasiones = Math.max(0, (est.evasiones || 0) - 1);
+    }
+  }
+  
+  // Eliminar el registro
+  registros.splice(idx, 1);
+  guardar(); 
+  renderTabla();
+  renderEventos();
+  alert('✅ Evento eliminado correctamente.');
+}
+
 function limpiarFiltros() {
   document.getElementById('filtroEventoFecha').value='';
   document.getElementById('busquedaEventos').value='';
@@ -1186,6 +1225,7 @@ function renderConsolidado() {
       <th>#</th><th>Nombre</th><th>Grupo</th>
       <th>➕ Pos.</th><th>Umbral</th>
       <th>✱ Neg.</th><th>⚠️ Obs.</th>
+      <th>📋 Asistencia</th>
       <th>XP</th><th>Nivel</th><th>Estado</th>
     </tr></thead><tbody>`;
 
@@ -1203,6 +1243,13 @@ function renderConsolidado() {
     if(obsCount>0) estado+=`⚠️ ${obsCount} obs. `;
     if(rec) estado+='🏆 Reconocimiento';
     if(!obsCount&&!rec) estado='✅ Normal';
+    // Contar asistencias de la semana actual
+    const asisSemanales = registros.filter(r=>r.estudianteId===est.id&&r.tipo==='asistencia'&&r.semana===semana);
+    const presentes = asisSemanales.filter(r=>r.motivo==='PRESENTE').length;
+    const ausentes = asisSemanales.filter(r=>r.motivo==='AUSENTE').length;
+    const justificadas = asisSemanales.filter(r=>r.motivo==='JUSTIFICADA').length;
+    const resumenAsis = `P:${presentes} A:${ausentes} J:${justificadas}`;
+    
     html+=`<tr>
       <td>${i+1}</td>
       <td style="text-align:left;padding-left:10px;font-weight:bold;">${est.nombre}</td>
@@ -1211,6 +1258,7 @@ function renderConsolidado() {
       <td class="muted">${umbral}</td>
       <td class="${negTot>0?'warning':''}">${negTot}</td>
       <td class="${obsCount>0?'danger':'muted'}">${obsCount}</td>
+      <td style="font-size:0.82rem;color:#38bdf8;">${resumenAsis}</td>
       <td class="good">${est.xp||0}</td>
       <td style="font-size:0.78rem;">${label}</td>
       <td style="font-size:0.82rem;">${estado}</td>
