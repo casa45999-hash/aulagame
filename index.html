@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sistema Integrado: Aula Game y Planilla de Valoraciones</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f1f5f9; color: #1e293b; padding: 20px; }
+    .container { max-width: 1300px; margin: auto; background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
+    
+    /* Encabezado y pestañas */
+    .header { border-bottom: 2px solid #e2e8f0; padding-bottom: 15px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; }
+    h1 { color: #0f172a; font-size: 1.8rem; }
+    .tabs { display: flex; gap: 10px; margin-bottom: 20px; }
+    .tab-btn { padding: 10px 20px; border: none; background: #cbd5e1; color: #475569; font-weight: bold; border-radius: 6px; cursor: pointer; transition: 0.2s; }
+    .tab-btn.active { background: #2563eb; color: white; }
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+
+    /* Barras de herramientas y formularios */
+    .toolbar { display: flex; flex-wrap: wrap; gap: 12px; background: #f8fafc; padding: 15px; border-radius: 8px; margin-bottom: 20px; align-items: center; border: 1px solid #e2e8f0; }
+    .form-group { display: flex; flex-direction: column; gap: 4px; }
+    label { font-size: 0.8rem; font-weight: bold; color: #475569; text-transform: uppercase; }
+    input, select, button { padding: 8px 12px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 0.9rem; }
+    button { background: #2563eb; color: white; font-weight: bold; cursor: pointer; border: none; }
+    button:hover { background: #1d4ed8; }
+    
+    /* Botones de colores */
+    .btn-success { background: #16a34a; } .btn-success:hover { background: #15803d; }
+    .btn-danger { background: #dc2626; } .btn-danger:hover { background: #b91c1c; }
+    .btn-secondary { background: #475569; } .btn-secondary:hover { background: #334155; }
+    .btn-warning { background: #ea580c; } .btn-warning:hover { background: #c2410c; }
+
+    /* Tablas */
+    table { width: 100%; border-collapse: collapse; margin-top: 10px; text-align: left; }
+    th { background: #0f172a; color: white; padding: 12px 10px; font-size: 0.85rem; text-transform: uppercase; }
+    td { padding: 10px; border-bottom: 1px solid #e2e8f0; font-size: 0.9rem; }
+    tr:hover td { background: #f8fafc; }
+
+    /* Componentes del juego y notas */
+    .puntos-badge { background: #dcfce7; color: #15803d; font-weight: bold; padding: 4px 8px; border-radius: 20px; }
+    .asterisco-badge { color: #dc2626; font-weight: bold; font-size: 1.2rem; letter-spacing: 2px; }
+    .nota-input { width: 65px; text-align: center; font-weight: bold; }
+    .desempeño { font-weight: bold; padding: 4px 8px; border-radius: 4px; font-size: 0.8rem; display: inline-block; }
+    .superior { background: #dbeafe; color: #1e40af; }
+    .alto { background: #dcfce7; color: #166534; }
+    .basico { background: #fef9c3; color: #854d0e; }
+    .bajo { background: #fee2e2; color: #991b1b; }
+    
+    .alerta-observador { background: #fee2e2; border: 1px solid #fca5a5; color: #991b1b; padding: 2px 6px; border-radius: 4px; font-weight: bold; font-size: 0.75rem; animation: pulse 2s infinite; }
+    @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
+    .muted { color: #64748b; text-align: center; padding: 30px; font-style: italic; }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <div class="header">
+    <div>
+      <h1>⚡ Sistema Integrado Pedagógico</h1>
+      <p style="color: #64748b; font-size: 0.9rem;">Control de Aula y Planilla Curricular</p>
+    </div>
+    <!-- Controles Globales de Archivo -->
+    <div style="display: flex; gap: 8px;">
+      <label class="btn-secondary" style="padding: 8px 12px; border-radius: 6px; color: white; cursor: pointer; font-weight: bold; font-size: 0.9rem;">
+        📥 Cargar Respaldo (.json)
+        <input type="file" id="cargarArchivo" accept=".json" style="display: none;" onchange="importarTodo(event)">
+      </label>
+      <button class="btn-success" onclick="guardarEnNavegador()">💾 Guardar Todo</button>
+      <button style="background: #0284c7;" onclick="exportarTodo()">📦 Descargar Respaldo</button>
+    </div>
+  </div>
+
+  <!-- Barra de Filtro de Grupo Global -->
+  <div class="toolbar" style="background: #edf2f7;">
+    <div class="form-group">
+      <label>Seleccionar Grupo de Trabajo</label>
+      <select id="grupoActivo" onchange="cambiarGrupo()" style="font-weight: bold; width: 150px;">
+        <!-- Se llenará dinámicamente -->
+      </select>
+    </div>
+    <div class="form-group" id="materiaContenedor">
+      <label>Asignatura / Área (Para Notas)</label>
+      <select id="materiaActiva" onchange="actualizarVistas()">
+        <option value="Language">Language Arts</option>
+        <option value="Mi Meta">Entrepreneurship (Mi Meta)</option>
+        <option value="Peace">Sociales / Cátedra de Paz</option>
+      </select>
+    </div>
+    <div style="flex: 1;"></div>
+    <button class="btn-warning" onclick="reiniciarAsteriscosDia()">🧹 Reiniciar Asteriscos del Día</button>
+  </div>
+
+  <!-- Pestañas de Navegación -->
+  <div class="tabs">
+    <button class="tab-btn active" onclick="switchTab('juego')">🎮 1. Aula Game (Puntos y Faltas)</button>
+    <button class="tab-btn" onclick="switchTab('planilla')">📋 2. Planilla de Notas</button>
+    <button class="tab-btn" onclick="switchTab('config')">⚙️ 3. Configurar Alumnos y Grupos</button>
+  </div>
+
+  <!-- ================= PESTAÑA 1: JUEGO DE AULA ================= -->
+  <div id="tab-juego" class="tab-content active">
+    <table>
+      <thead>
+        <tr>
+          <th>Estudiante</th>
+          <th>Puntos Positivos (XP)</th>
+          <th>Acciones Positivas</th>
+          <th>Asteriscos (Faltas Diarias)</th>
+          <th>Acciones Negativas (Máx 3)</th>
+          <th>Estado del Día</th>
+        </tr>
+      </thead>
+      <tbody id="cuerpoJuego"></tbody>
+    </table>
+  </div>
+
+  <!-- ================= PESTAÑA 2: PLANILLA DE NOTAS ================= -->
+  <div id="tab-planilla" class="tab-content">
+    <table>
+      <thead>
+        <tr>
+          <th>Estudiante</th>
+          <th>Cognitivo (40%)</th>
+          <th>Procedimental (40%)</th>
+          <th>Actitudinal (20%)</th>
+          <th>Definitiva</th>
+          <th>Desempeño Nacional</th>
+        </tr>
+      </thead>
+      <tbody id="cuerpoPlanilla"></tbody>
+    </table>
+    <div style="margin-top: 15px; text-align: right;">
+      <button class="btn-secondary" onclick="exportarCSV()">⬇️ Exportar este grupo a Excel (CSV)</button>
+    </div>
+  </div>
+
+  <!-- ================= PESTAÑA 3: CONFIGURACIÓN ================= -->
+  <div id="tab-config" class="tab-content">
+    <div class="toolbar" style="background: #f8fafc; border: 1px dashed #cbd5e1;">
+      <div class="form-group" style="flex: 2;">
+        <label>Nombre Completo del Estudiante</label>
+        <input type="text" id="cfgNombre" placeholder="Ej: Juan Pérez">
+      </div>
+      <div class="form-group">
+        <label>Asignar al Grupo</label>
+        <input type="text" id="cfgGrupo" placeholder="Ej: 6-1 o 7-2" style="width: 120px; text-transform: uppercase;">
+      </div>
+      <button style="margin-top: 18px;" onclick="crearEstudiante()">➕ Registrar Alumno</button>
+    </div>
+
+    <h3 style="margin: 15px 0 5px 0;">Lista de Control del Grupo Seleccionado</h3>
+    <p style="color: #64748b; font-size: 0.85rem; margin-bottom: 10px;">Aquí puedes revisar duplicados y eliminar alumnos por completo del sistema.</p>
+    <table>
+      <thead>
+        <tr>
+          <th>Nombre del Alumno</th>
+          <th>Grupo Asignado</th>
+          <th>Acción Única</th>
+        </tr>
+      </thead>
+      <tbody id="cuerpoConfig"></tbody>
+    </table>
+  </div>
+
+</div>
+
+<script>
+  // Estructuras principales de datos nativos
+  let estudiantes = JSON.parse(localStorage.getItem('integ_estudiantes')) || [];
+  let notas = JSON.parse(localStorage.getItem('integ_notas')) || {};
+
+  // Cambiar entre pestañas de la aplicación
+  function switchTab(tabId) {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+    event.target.classList.add('active');
+    document.getElementById('tab-' + tabId).classList.add('active');
+    actualizarVistas();
+  }
+
+  // Guardar datos de forma persistente en el navegador actual
+  function guardarEnNavegador() {
+    localStorage.setItem('integ_estudiantes', JSON.stringify(estudiantes));
+    localStorage.setItem('integ_notas', JSON.stringify(notas));
+    actualizarSelectGrupos();
+    actualizarVistas();
+  }
+
+  // REGLA 1: Crear dinámicamente estudiantes y grupos sin límites
+  function crearEstudiante() {
+    const nombre = document.getElementById('cfgNombre').value.trim();
+    const grupo = document.getElementById('cfgGrupo').value.trim().toUpperCase();
+    
+    if(!nombre || !grupo) { alert('Por favor llena el nombre y el grupo.'); return; }
+    
+    const id = 'est_' + Date.now() + Math.random().toString(36).substr(2, 5);
+    // Inicializamos puntos en 0 y asteriscos del día en 0
+    estudiantes.push({ id, nombre, grupo, xp: 0, asteriscos: 0 });
+    
+    document.getElementById('cfgNombre').value = '';
+    guardarEnNavegador();
+    alert(`Estudiante registrado correctamente en el grupo ${grupo}`);
+  }
+
+  // REGLA 3: Eliminar estudiantes por completo para corregir duplicados por error
+  function eliminarEstudiante(id) {
+    const alumno = estudiantes.find(e => e.id === id);
+    if(confirm(`¿Estás completamente seguro de eliminar a "${alumno.nombre}"? Esto borrará sus puntos y sus calificaciones definitivamente.`)) {
+      estudiantes = estudiantes.filter(e => e.id !== id);
+      // Limpiar notas ligadas a este ID único
+      for (let key in notas) { if(key.startsWith(id)) delete notas[key]; }
+      guardarEnNavegador();
+    }
+  }
+
+  // REGLA 2: Lógica de puntos acumulables y asteriscos limitados a 3 en el mismo día
+  function modificarXP(id, valor) {
+    const alumno = estudiantes.find(e => e.id === id);
+    if(alumno) {
+      alumno.xp = Math.max(0, alumno.xp + valor); // Los puntos positivos se acumulan libremente
+      actualizarVistas();
+    }
+  }
+
+  function agregarAsterisco(id) {
+    const alumno = estudiantes.find(e => e.id === id);
+    if(alumno) {
+      if(alumno.asteriscos < 3) {
+        alumno.asteriscos++;
+        if(alumno.asteriscos === 3) {
+          alert(`🚨 LLAMADO DE ATENCIÓN MÁXIMO: Alumno ${alumno.nombre} llegó a 3 asteriscos hoy. Requiere anotación en el observador.`);
+        }
+      } else {
+        alert(`El estudiante ya alcanzó el límite máximo de 3 asteriscos para la sesión de hoy.`);
+      }
+      actualizarVistas();
+    }
+  }
+
+  function quitarAsterisco(id) {
+    const alumno = estudiantes.find(e => e.id === id);
+    if(alumno && alumno.asteriscos > 0) {
+      alumno.asteriscos--;
+      actualizarVistas();
+    }
+  }
+
+  // Limpieza diaria de asteriscos para iniciar la nueva jornada escolar en 0
+  function reiniciarAsteriscosDia() {
+    if(confirm('¿Deseas reiniciar los asteriscos de todos los alumnos a 0 para iniciar una nueva sesión de clases hoy? (Los puntos positivos XP no se borrarán)')) {
+      estudiantes.forEach(e => e.asteriscos = 0);
+      guardarEnNavegador();
+      alert('🧹 Todos los asteriscos diarios han sido reiniciados a 0.');
+    }
+  }
+
+  // Manejo de la Planilla Escolar de Notas
+  function cambiarNota(estudianteId, componente, valor) {
+    let num = parseFloat(valor) || 0;
+    if (num < 0) num = 0; if (num > 5) num = 5;
+    
+    const materia = document.getElementById('materiaActiva').value;
+    const key = `${estudianteId}_${materia}`;
+    
+    if (!notas[key]) notas[key] = { cog: 0, pro: 0, act: 0 };
+    notas[key][componente] = num;
+    
+    // Cálculo de la ponderación oficial en Colombia (40% - 40% - 20%)
+    const def = (notas[key].cog * 0.40) + (notas[key].pro * 0.40) + (notas[key].act * 0.20);
+    document.getElementById(`def_${key}`).textContent = def.toFixed(1);
+    
+    // Escala de Desempeño Nacional
+    const badge = document.getElementById(`badge_${key}`);
+    let escala = { t: 'Bajo', c: 'bajo' };
+    if (def >= 4.6) escala = { t: 'Superior', c: 'superior' };
+    else if (def >= 4.0) escala = { t: 'Alto', c: 'alto' };
+    else if (def >= 3.0) escala = { t: 'Básico', c: 'basico' };
+    
+    badge.textContent = escala.t;
+    badge.className = `desempeño ${escala.c}`;
+  }
+
+  // Actualizar los listados selectores según los grupos existentes en tiempo real
+  function actualizarSelectGrupos() {
+    const select = document.getElementById('grupoActivo');
+    const valorActual = select.value;
+    
+    // Obtener grupos únicos de los estudiantes registrados
+    const gruposUnicos = [...new Set(estudiantes.map(e => e.grupo))].sort();
+    
+    select.innerHTML = '';
+    if(gruposUnicos.length === 0) {
+      select.innerHTML = '<option value="">Sin grupos</option>';
+      return;
+    }
+    
+    gruposUnicos.forEach(g => {
+      select.innerHTML += `<option value="${g}">${g}</option>`;
+    });
+    
+    if(gruposUnicos.includes(valorActual)) {
+      select.value = valorActual;
+    }
+  }
+
+  function cambiarGrupo() {
+    actualizarVistas();
+  }
+
+  // Renderizar las vistas de forma coordinada
+  function actualizarVistas() {
+    const grupo = document.getElementById('grupoActivo').value;
+    const materia = document.getElementById('materiaActiva').value;
+    
+    const cJuego = document.getElementById('cuerpoJuego');
+    const cPlanilla = document.getElementById('cuerpoPlanilla');
+    const cConfig = document.getElementById('cuerpoConfig');
+    
+    cJuego.innerHTML = ''; cPlanilla.innerHTML = ''; cConfig.innerHTML = '';
+    
+    const filtrados = estudiantes.filter(e => e.grupo === grupo).sort((a,b) => a.nombre.localeCompare(b.nombre));
+    
+    if(filtrados.length === 0) {
+      const msg = `<tr><td colspan="6" class="muted">No hay estudiantes en este grupo. Registra alumnos en la pestaña 3.</td></tr>`;
+      cJuego.innerHTML = msg; cPlanilla.innerHTML = msg; cConfig.innerHTML = `<tr><td colspan="3" class="muted">No hay estudiantes.</td></tr>`;
+      return;
+    }
+
+    filtrados.forEach(e => {
+      // 1. Render Pestaña Juego
+      let astVisual = '';
+      for(let i=0; i<e.asteriscos; i++) astVisual += '★';
+      let estadoDia = e.asteriscos === 3 ? '<span class="alerta-observador">🚨 Reportar Observador</span>' : '<span style="color:#16a34a;font-weight:500;">✓ Estable</span>';
+      
+      cJuego.innerHTML += `
+        <tr>
+          <td style="font-weight:bold;">${e.nombre}</td>
+          <td><span class="puntos-badge">${e.xp} XP</span></td>
+          <td>
+            <button class="btn-success" style="padding:4px 10px;" onclick="modificarXP('${e.id}', 10)">+10 XP</button>
+            <button class="btn-secondary" style="padding:4px 10px;" onclick="modificarXP('${e.id}', -10)">-10 XP</button>
+          </td>
+          <td><span class="asterisco-badge">${astVisual || '-'}</span></td>
+          <td>
+            <button class="btn-danger" style="padding:4px 10px;" onclick="agregarAsterisco('${e.id}')">+1 Asterisco</button>
+            <button class="btn-secondary" style="padding:4px 10px;" onclick="quitarAsterisco('${e.id}')">↩ Quitar</button>
+          </td>
+          <td>${estadoDia}</td>
+        </tr>
+      `;
+
+      // 2. Render Pestaña Planilla
+      const key = `${e.id}_${materia}`;
+      const record = notas[key] || { cog: 0, pro: 0, act: 0 };
+      const def = (record.cog * 0.40) + (record.pro * 0.40) + (record.act * 0.20);
+      
+      let escala = { t: 'Bajo', c: 'bajo' };
+      if (def >= 4.6) escala = { t: 'Superior', c: 'superior' };
+      else if (def >= 4.0) escala = { t: 'Alto', c: 'alto' };
+      else if (def >= 3.0) escala = { t: 'Básico', c: 'basico' };
+
+      cPlanilla.innerHTML += `
+        <tr>
+          <td style="font-weight:bold;">${e.nombre}</td>
+          <td><input type="number" step="0.1" min="0" max="5" class="nota-input" value="${record.cog}" onchange="cambiarNota('${e.id}','cog',this.value)"></td>
+          <td><input type="number" step="0.1" min="0" max="5" class="nota-input" value="${record.pro}" onchange="cambiarNota('${e.id}','pro',this.value)"></td>
+          <td><input type="number" step="0.1" min="0" max="5" class="nota-input" value="${record.act}" onchange="cambiarNota('${e.id}','act',this.value)"></td>
+          <td style="font-weight:2000; font-size:1.05rem; color:#0f172a;"><span id="def_${key}">${def.toFixed(1)}</span></td>
+          <td><span id="badge_${key}" class="desempeño ${escala.c}">${escala.t}</span></td>
+        </tr>
+      `;
+
+      // 3. Render Pestaña Configuración (Eliminar duplicados)
+      cConfig.innerHTML += `
+        <tr>
+          <td><strong>${e.nombre}</strong></td>
+          <td><span style="background:#e2e8f0; padding:3px 8px; border-radius:4px; font-weight:bold;">${e.grupo}</span></td>
+          <td><button class="btn-danger" style="padding: 4px 10px; font-size:0.8rem;" onclick="eliminarEstudiante('${e.id}')">🗑️ Eliminar Alumno</button></td>
+        </tr>
+      `;
+    });
+  }
+
+  // Copias de Seguridad Totales (.json) para saltar de un PC a otro sin pérdidas
+  function exportarTodo() {
+    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify({ estudiantes, notas }));
+    const downloadAnchor = document.createElement('a');
+    downloadAnchor.setAttribute("href", dataStr);
+    downloadAnchor.setAttribute("download", `RESPALDO_SISTEMA_TOTAL.json`);
+    document.body.appendChild(downloadAnchor);
+    downloadAnchor.click();
+    document.body.removeChild(downloadAnchor);
+  }
+
+  function importarTodo(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      try {
+        const datos = JSON.parse(e.target.result);
+        if (datos.estudiantes) {
+          estudiantes = datos.estudiantes;
+          notas = datos.notas || {};
+          guardarEnNavegador();
+          alert('📦 ¡Respaldo total cargado con éxito! Grupos, alumnos, XP y notas sincronizados.');
+        } else { alert('Archivo no válido.'); }
+      } catch(err) { alert('Error al leer el archivo.'); }
+    };
+    reader.readAsText(file);
+  }
+
+  // Exportación directa a Excel / CSV
+  function exportarCSV() {
+    const grupo = document.getElementById('grupoActivo').value;
+    const materia = document.getElementById('materiaActiva').value;
+    let csv = 'Estudiante;Grupo;Asignatura;Cognitivo(40%);Procedimental(40%);Actitudinal(20%);Definitiva;Desempeno\r\n';
+
+    estudiantes.filter(e => e.grupo === grupo).forEach(e => {
+      const key = `${e.id}_${materia}`;
+      const record = notas[key] || { cog: 0, pro: 0, act: 0 };
+      const def = (record.cog * 0.40) + (record.pro * 0.40) + (record.act * 0.20);
+      let escala = 'Bajo';
+      if (def >= 4.6) escala = 'Superior'; else if (def >= 4.0) escala = 'Alto'; else if (def >= 3.0) escala = 'Básico';
+      csv += `"${e.nombre}";"${e.grupo}";"${materia}";"${record.cog}";"${record.pro}";"${record.act}";"${def.toFixed(1)}";"${escala}"\r\n`;
+    });
+
+    const blob = new Blob([new Uint8Array([0xEF, 0xBB, 0xBF]), csv], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.setAttribute("download", `Notas_${materia}_Grupo_${grupo}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  }
+
+  // Inicialización segura de arranque
+  actualizarSelectGrupos();
+  actualizarVistas();
+</script>
+</body>
+</html>
