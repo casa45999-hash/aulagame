@@ -24,7 +24,7 @@
     .btn-amber{background:#f59e0b;color:white;} .btn-purple{background:#a855f7;color:white;}
     .btn-teal{background:#14b8a6;color:white;}
     .table-wrap{overflow-x:auto;margin-top:10px;}
-    table{width:100%;border-collapse:collapse;border-radius:14px;overflow:hidden;min-width:700px;}
+    table{width:100%;border-collapse:collapse;border-radius:14px;overflow:hidden;min-width:700px;margin-bottom:15px;}
     th{background:#0369a1;padding:11px 9px;font-size:0.82rem;white-space:nowrap;}
     td{padding:9px 7px;text-align:center;background:rgba(255,255,255,0.04);border-bottom:1px solid rgba(255,255,255,0.07);font-size:0.88rem;}
     tr:hover td{background:rgba(255,255,255,0.09);}
@@ -33,68 +33,37 @@
     .xpbar{width:75px;background:#1e293b;border-radius:8px;height:11px;overflow:hidden;display:inline-block;vertical-align:middle;}
     .xpfill{height:100%;background:linear-gradient(90deg,#22c55e,#84cc16);transition:width 0.4s;}
     .badge-obs{display:inline-block;background:#ef4444;color:white;border-radius:8px;padding:2px 7px;font-size:0.73rem;font-weight:bold;animation:pulse 1s infinite alternate;}
-    .badge-rec{display:inline-block;background:#f59e0b;color:#1e293b;border-radius:8px;padding:2px 7px;font-size:0.73rem;font-weight:bold;}
     @keyframes pulse{from{opacity:1}to{opacity:0.5}}
 
     /* Modales */
     .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.82);z-index:900;align-items:center;justify-content:center;}
     .modal-overlay.show{display:flex;}
     .modal-box{border-radius:20px;padding:28px;width:92%;}
-    .modal-sm{max-width:420px;} .modal-md{max-width:500px;} .modal-lg{max-width:560px;}
-    .modal-obs{background:#1e293b;border:3px solid #ef4444;box-shadow:0 0 40px #ef444455;}
-    .modal-rec{background:#1e293b;border:3px solid #f59e0b;box-shadow:0 0 40px #f59e0b55;}
-    .modal-motivo{background:#1e293b;border:2px solid #475569;box-shadow:0 0 20px rgba(0,0,0,0.6);}
-    .modal-edit{background:#1e293b;border:2px solid #3b82f6;box-shadow:0 0 20px rgba(0,0,0,0.6);}
-    .modal-box h2{font-size:1.45rem;margin-bottom:10px;}
-    .modal-box p{color:#e2e8f0;margin-bottom:8px;font-size:0.9rem;}
-    .modal-nombre{font-size:1.3rem;font-weight:bold;color:white;margin:10px 0;}
+    .modal-sm{max-width:420px;} .modal-md{max-width:500px;}
+    .modal-obs{background:#1e293b;border:3px solid #ef4444;}
+    .modal-rec{background:#1e293b;border:3px solid #f59e0b;}
+    .modal-motivo{background:#1e293b;border:2px solid #475569;}
+    .modal-edit{background:#1e293b;border:2px solid #3b82f6;}
     .motivos-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:12px 0;}
-    .btn-motivo{padding:9px 11px;border-radius:10px;border:2px solid transparent;background:rgba(255,255,255,0.07);color:white;font-size:0.83rem;cursor:pointer;text-align:left;transition:all 0.15s;}
-    .btn-motivo:hover{background:rgba(255,255,255,0.15);border-color:rgba(255,255,255,0.3);}
+    .btn-motivo{padding:9px 11px;border-radius:10px;border:2px solid transparent;background:rgba(255,255,255,0.07);color:white;font-size:0.83rem;cursor:pointer;text-align:left;}
     .btn-motivo.neg-sel{background:rgba(239,68,68,0.25);border-color:#ef4444;}
     .btn-motivo.pos-sel{background:rgba(34,197,94,0.25);border-color:#22c55e;}
-    .otro-input{width:100%;margin-top:8px;background:#334155;color:white;border:1px solid #475569;border-radius:10px;padding:10px;font-size:0.9rem;display:none;}
-    .dark-input{background:#334155;color:white;border:1px solid #475569;}
+    .otro-input{width:100%;margin-top:8px;background:#334155;color:white;border:1px solid #475569;border-radius:10px;padding:10px;display:none;}
 
     /* Login */
     #loginOverlay{position:fixed;inset:0;background:rgba(0,0,0,0.92);display:flex;align-items:center;justify-content:center;z-index:999;}
-    #loginBox{background:#1e293b;border:2px solid #38bdf8;border-radius:20px;padding:40px;text-align:center;min-width:320px;box-shadow:0 0 30px #38bdf855;}
-    #loginBox h2{color:#38bdf8;margin-bottom:8px;font-size:1.6rem;}
-    #loginBox p{color:#94a3b8;margin-bottom:16px;font-size:0.9rem;}
+    #loginBox{background:#1e293b;border:2px solid #38bdf8;border-radius:20px;padding:40px;text-align:center;min-width:320px;}
     #loginBox input{width:100%;margin:6px 0;background:#334155;color:white;border:1px solid #475569;}
-    #loginBox input::placeholder{color:#64748b;}
-    #errorMsg{color:#f87171;font-size:0.85rem;min-height:1.2em;margin-top:8px;}
+    #errorMsg{color:#f87171;font-size:0.85rem;margin-top:8px;}
     #mainContent{display:none;}
 
-    /* Consolidado */
-    .semana-header{background:rgba(14,165,233,0.15);border-left:4px solid #0ea5e9;padding:10px 16px;border-radius:8px;margin-bottom:12px;font-weight:bold;color:#38bdf8;}
-    .stat-chips{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px;}
-    .chip{padding:7px 14px;border-radius:20px;font-size:0.83rem;font-weight:bold;}
-    .chip-green{background:rgba(34,197,94,0.2);color:#4ade80;}
-    .chip-red{background:rgba(239,68,68,0.2);color:#f87171;}
-    .chip-amber{background:rgba(245,158,11,0.2);color:#fbbf24;}
-    .chip-blue{background:rgba(56,189,248,0.2);color:#38bdf8;}
-    .chip-purple{background:rgba(168,85,247,0.2);color:#c084fc;}
-
-    /* Barra semana */
-    #barraInfoSemana{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:center;margin-bottom:18px;}
-    .dia-chip{padding:6px 12px;border-radius:10px;font-size:0.82rem;font-weight:bold;background:rgba(255,255,255,0.07);color:#94a3b8;}
-    .dia-chip.hoy{background:#0ea5e9;color:white;}
-    .dia-chip.pasado{background:rgba(255,255,255,0.04);color:#475569;text-decoration:line-through;}
-
-    /* Eventos */
+    /* Elementos de Notas */
+    .semana-header{background:rgba(14,165,233,0.15);border-left:4px solid #0ea5e9;padding:10px 16px;border-radius:8px;margin-bottom:12px;font-weight:bold;color:#38bdf8;display:flex;justify-content:space-between;align-items:center;}
+    .input-nota{width:55px;padding:4px;text-align:center;border-radius:6px;border:1px solid #475569;background:#1e293b;color:white;font-weight:bold;}
     .evento-item{display:flex;gap:10px;align-items:flex-start;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.06);font-size:0.85rem;}
-    .evento-tipo{min-width:26px;font-size:1rem;}
-    .evento-info{flex:1;}
-    .evento-meta{color:#64748b;font-size:0.77rem;}
-
-    /* Búsqueda */
     .search-box{position:relative;display:inline-block;}
     .search-box input{padding-left:34px;}
-    .search-icon{position:absolute;left:10px;top:50%;transform:translateY(-50%);color:#64748b;font-size:0.9rem;pointer-events:none;}
-
-    /* Respaldo */
-    #respaldoMsg{font-size:0.78rem;color:#64748b;text-align:center;margin-top:6px;}
+    .search-icon{position:absolute;left:10px;top:50%;transform:translateY(-50%);color:#64748b;pointer-events:none;}
   </style>
 </head>
 <body>
@@ -107,18 +76,16 @@
     <input type="password" id="pass1" placeholder="Código 1"/>
     <input type="password" id="pass2" placeholder="Código 2"/>
     <div id="errorMsg"></div>
-    <button class="btn-blue" style="width:100%;margin-top:14px;font-size:1rem;" onclick="verificarAcceso()">Ingresar</button>
+    <button class="btn-blue" style="width:100%;margin-top:14px;" onclick="verificarAcceso()">Ingresar</button>
   </div>
 </div>
 
 <!-- MODAL BIENVENIDA -->
 <div id="bienvenidaModal" class="modal-overlay">
   <div class="modal-box modal-edit modal-sm" style="text-align:center;">
-    <div style="font-size:2rem;margin-bottom:8px;">👋</div>
     <h2 style="color:#38bdf8;margin-bottom:8px;">¡Bienvenido!</h2>
-    <p style="color:#94a3b8;margin-bottom:6px;">¿Tienes un respaldo guardado en tu USB?</p>
-    <p style="color:#64748b;font-size:0.82rem;margin-bottom:18px;">Si vienes de otro computador o el navegador fue limpiado, restaura tu JSON para recuperar todos los datos.</p>
-    <label class="btn-amber" style="cursor:pointer;display:block;width:100%;margin-bottom:10px;padding:10px;border-radius:10px;font-weight:bold;text-align:center;">
+    <p style="color:#94a3b8;margin-bottom:18px;">¿Tienes un respaldo guardado en tu USB?</p>
+    <label class="btn-amber" style="cursor:pointer;display:block;width:100%;margin-bottom:10px;padding:10px;border-radius:10px;text-align:center;">
       ⬆️ Restaurar respaldo JSON
       <input type="file" id="fileRestaurarBienvenida" accept=".json" style="display:none;" onchange="restaurarRespaldoBienvenida(event)"/>
     </label>
@@ -129,10 +96,8 @@
 <!-- MODAL SALIR -->
 <div id="salirModal" class="modal-overlay">
   <div class="modal-box modal-edit modal-sm" style="text-align:center;">
-    <div style="font-size:2rem;margin-bottom:8px;">💾</div>
     <h2 style="color:#f59e0b;margin-bottom:8px;">Antes de salir</h2>
-    <p style="color:#e2e8f0;margin-bottom:6px;">¿Guardaste tu respaldo en la USB?</p>
-    <p style="color:#94a3b8;font-size:0.82rem;margin-bottom:18px;">Si no lo haces, los datos podrían perderse si el navegador se limpia.</p>
+    <p style="color:#e2e8f0;margin-bottom:12px;">¿Guardaste tu respaldo en la USB?</p>
     <button class="btn-teal" style="width:100%;margin-bottom:10px;" onclick="exportarYSalir()">💾 Exportar respaldo y salir</button>
     <button class="btn-gray" style="width:100%;" onclick="cerrarSalir()">Salir sin guardar</button>
   </div>
@@ -142,8 +107,8 @@
 <div id="motivoModal" class="modal-overlay">
   <div class="modal-box modal-motivo modal-md">
     <h2 id="motivoTitulo">Selecciona el motivo</h2>
-    <p id="motivoEstudiante" style="color:#94a3b8;margin-bottom:2px;"></p>
-    <p id="motivoMateria" style="color:#64748b;font-size:0.82rem;margin-bottom:4px;"></p>
+    <p id="motivoEstudiante" style="color:#94a3b8;"></p>
+    <p id="motivoMateria" style="color:#64748b;font-size:0.82rem;"></p>
     <div class="motivos-grid" id="motivosGrid"></div>
     <input type="text" id="otroTexto" class="otro-input" placeholder="Describe el motivo..." maxlength="80"/>
     <div style="display:flex;gap:8px;margin-top:12px;">
@@ -157,11 +122,10 @@
 <div id="alertaModal" class="modal-overlay">
   <div class="modal-box modal-obs modal-md">
     <h2 style="color:#ef4444;">⚠️ OBSERVADOR</h2>
-    <p>El estudiante acumuló <strong>3 negativos en el día</strong></p>
-    <div class="modal-nombre" id="alertaNombre"></div>
-    <p id="alertaGrado" style="color:#94a3b8;margin-bottom:8px;"></p>
-    <div id="alertaMotivos" style="background:rgba(239,68,68,0.1);border-radius:10px;padding:12px;margin-bottom:14px;text-align:left;font-size:0.84rem;"></div>
-    <p style="color:#fbbf24;font-size:0.83rem;margin-bottom:16px;">Consecuencia inamovible: registro en observador por indisciplina reiterada.</p>
+    <p>El estudiante acumuló 3 negativos en el día</p>
+    <div id="alertaNombre" style="font-size:1.3rem;font-weight:bold;margin:10px 0;"></div>
+    <p id="alertaGrado" style="color:#94a3b8;"></p>
+    <div id="alertaMotivos" style="background:rgba(239,68,68,0.1);border-radius:10px;padding:12px;margin:14px 0;font-size:0.84rem;"></div>
     <button class="btn-red" style="width:100%;margin-bottom:8px;" onclick="imprimirObservador()">🖨️ Imprimir reporte</button>
     <button class="btn-gray" style="width:100%;" onclick="cerrarAlerta()">Cerrar</button>
   </div>
@@ -169,32 +133,27 @@
 
 <!-- MODAL RECONOCIMIENTO -->
 <div id="recModal" class="modal-overlay">
-  <div class="modal-box modal-rec modal-md">
+  <div class="modal-box modal-rec modal-md" style="text-align:center;">
     <h2 style="color:#f59e0b;">🏆 ¡RECONOCIMIENTO!</h2>
-    <p>Alcanzó el umbral semanal de positivos</p>
-    <div class="modal-nombre" id="recNombre"></div>
+    <div id="recNombre" style="font-size:1.3rem;font-weight:bold;margin:10px 0;"></div>
     <p id="recGrado" style="color:#94a3b8;margin-bottom:14px;"></p>
-    <p style="color:#4ade80;font-size:0.95rem;margin-bottom:18px;">¡Mención de honor semanal! 🎉</p>
     <button class="btn-purple" style="width:100%;margin-bottom:8px;" onclick="imprimirReconocimiento()">🖨️ Imprimir certificado</button>
-    <button class="btn-amber" style="width:100%;" onclick="cerrarRec()">¡Celebrar y cerrar!</button>
+    <button class="btn-amber" style="width:100%;" onclick="cerrarRec()">¡Cerrar!</button>
   </div>
 </div>
 
 <!-- MODAL EDITAR ESTUDIANTE -->
 <div id="editModal" class="modal-overlay">
   <div class="modal-box modal-edit modal-sm">
-    <h2 style="color:#3b82f6;">✏️ Editar estudiante</h2>
+    <h2>✏️ Editar estudiante</h2>
     <input type="hidden" id="editIdx"/>
     <div style="margin:14px 0;">
-      <label style="font-size:0.85rem;color:#94a3b8;display:block;margin-bottom:6px;">Nombre</label>
+      <label style="font-size:0.85rem;color:#94a3b8;">Nombre</label>
       <input type="text" id="editNombre" style="width:100%;" maxlength="60"/>
     </div>
     <div style="margin-bottom:14px;">
-      <label style="font-size:0.85rem;color:#94a3b8;display:block;margin-bottom:6px;">Grupo</label>
-      <select id="editGrado" style="width:100%;">
-        <option>4-1</option><option>6-1</option><option>6-2</option>
-        <option>7-1</option><option>7-2</option><option>8-1</option>
-      </select>
+      <label style="font-size:0.85rem;color:#94a3b8;">Grupo</label>
+      <select id="editGrado" style="width:100%;"></select>
     </div>
     <div style="display:flex;gap:8px;">
       <button class="btn-gray" style="flex:1;" onclick="cerrarEdit()">Cancelar</button>
@@ -208,32 +167,24 @@
 <div class="container">
   <h1>🎮 Aula Game</h1>
   <div class="subtitle">Colegio Calipso</div>
-  <div id="syncStatus" style="text-align:center;font-size:0.8rem;margin-bottom:6px;">
-    <span id="syncDot" style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#64748b;margin-right:6px;vertical-align:middle;"></span>
-    <span id="syncTxt" style="color:#64748b;">Conectando con Drive...</span>
-  </div>
 
-  <!-- Barra de días de la semana -->
-  <div id="barraInfoSemana"></div>
+  <div id="barraInfoSemana" style="text-align:center;margin-bottom:14px;"></div>
 
   <div class="tabs">
     <button class="tab active" onclick="mostrarPanel('registro',this)">📋 Registro diario</button>
-    <button class="tab" onclick="mostrarPanel('eventos',this)">📜 Eventos</button>
-    <button class="tab" onclick="mostrarPanel('consolidado',this)">📊 Consolidado</button>
-    <button class="tab" onclick="mostrarPanel('config',this)">⚙️ Config</button>
+    <button class="tab" onclick="movedToTab('eventos'); mostrarPanel('eventos',this)">📜 Eventos</button>
+    <button class="tab" onclick="movedToTab('consolidado'); mostrarPanel('consolidado',this)">📊 Consolidado</button>
+    <button class="tab" onclick="movedToTab('notas'); mostrarPanel('notas',this)">📝 Planilla de Notas</button>
+    <button class="tab" onclick="movedToTab('config'); mostrarPanel('config',this)">⚙️ Config</button>
   </div>
 
   <!-- ══ REGISTRO DIARIO ══ -->
   <div id="panel-registro" class="panel active">
     <div class="top-panel">
       <input type="text" id="nombreInput" placeholder="Nombre del estudiante" style="min-width:190px;"/>
-      <select id="gradoInput">
-        <option value="">— Grupo —</option>
-        <option>4-1</option><option>6-1</option><option>6-2</option>
-        <option>7-1</option><option>7-2</option><option>8-1</option>
-      </select>
+      <select id="gradoInput"><option value="">— Grupo —</option></select>
       <button class="btn-blue" onclick="agregarEstudiante()">➕ Agregar</button>
-      <label class="btn-green" style="cursor:pointer;display:inline-block;padding:9px 14px;border-radius:10px;font-size:0.88rem;font-weight:bold;">
+      <label class="btn-green" style="cursor:pointer;padding:9px 14px;border-radius:10px;font-size:0.88rem;font-weight:bold;">
         📋 Importar lista CSV
         <input type="file" id="fileImportar" accept=".csv" style="display:none;" onchange="importarCSV(event)"/>
       </label>
@@ -245,29 +196,19 @@
         <span class="search-icon">🔍</span>
         <input type="text" id="busquedaInput" placeholder="Buscar estudiante..." style="min-width:180px;" oninput="renderTabla()"/>
       </div>
-      <select id="gradoFiltro" onchange="renderTabla()">
-        <option value="todos">Todos los grupos</option>
-        <option>4-1</option><option>6-1</option><option>6-2</option>
-        <option>7-1</option><option>7-2</option><option>8-1</option>
-      </select>
-      
-      <!-- NUEVO BOTÓN AGREGADO: ORDENAR A-Z -->
-      <button class="btn-blue" onclick="ordenarAlfabeticamente()" title="Ordenar lista de la A a la Z">🔤 Ordenar A-Z</button>
-      
-      <button class="btn-amber"  onclick="resetearSemana()">🔄 Cerrar semana</button>
-      <button class="btn-teal"   onclick="exportarRespaldo()">💾 Respaldo manual</button>
+      <select id="gradoFiltro" onchange="renderTabla()"><option value="todos">Todos los grupos</option></select>
+      <button class="btn-blue" onclick="ordenarAlfabeticamente()">🔤 Ordenar A-Z</button>
+      <button class="btn-amber" onclick="resetearSemana()">🔄 Cerrar semana</button>
+      <button class="btn-teal" onclick="exportarRespaldo()">💾 Respaldo manual</button>
       <button class="btn-purple" onclick="abrirSalir()">🚪 Guardar y salir</button>
-      <button class="btn-gray"   onclick="resetearTodo()">🗑️ Borrar todo</button>
-      <a href="https://drive.google.com/drive/search?q=aula-game" target="_blank" style="padding:9px 14px;border-radius:10px;font-size:0.88rem;font-weight:bold;background:#1a73e8;color:white;text-decoration:none;display:inline-flex;align-items:center;gap:6px;">🌐 Abrir Drive</a>
+      <button class="btn-gray" onclick="resetearTodo()">🗑️ Borrar todo</button>
     </div>
-    <div id="respaldoMsg"></div>
+    <div id="respaldoMsg" style="font-size:0.78rem;color:#64748b;margin-top:4px;"></div>
     <div class="table-wrap">
       <table>
         <thead><tr>
           <th>#</th><th>Nombre</th><th>Grupo</th><th>Nivel</th><th>XP</th><th>Progreso</th>
-          <th>➕ Pos.<br><small style="font-weight:normal;">semana</small></th>
-          <th>✱ Neg.<br><small style="font-weight:normal;">hoy</small></th>
-          <th>Estado</th><th>Asistencia<br><small>hoy</small></th><th>Evasiones<br><small>semana</small></th><th>Acciones</th>
+          <th>➕ Pos.</th><th>✱ Neg.</th><th>Estado</th><th>Asistencia hoy</th><th>Evasiones</th><th>Acciones</th>
         </tr></thead>
         <tbody id="cuerpoTabla"></tbody>
       </table>
@@ -277,312 +218,417 @@
   <!-- ══ EVENTOS ══ -->
   <div id="panel-eventos" class="panel">
     <div class="top-panel">
-      <div class="search-box">
-        <span class="search-icon">🔍</span>
-        <input type="text" id="busquedaEventos" placeholder="Buscar por nombre..." style="min-width:170px;" oninput="renderEventos()"/>
-      </div>
-      <select id="filtroEventoGrupo" onchange="renderEventos()">
-        <option value="todos">Todos los grupos</option>
-        <option>4-1</option><option>6-1</option><option>6-2</option>
-        <option>7-1</option><option>7-2</option><option>8-1</option>
-      </select>
-      <select id="filtroEventoTipo" onchange="renderEventos()">
-        <option value="todos">Todos</option>
-        <option value="pos">Solo positivos</option>
-        <option value="neg">Solo negativos</option>
-      </select>
-      <select id="filtroEventoMateria" onchange="renderEventos()">
-        <option value="todos">Todas las materias</option>
-        <option>Language</option><option>Mi Meta</option><option>Peace</option>
-      </select>
-      <input type="date" id="filtroEventoFecha" onchange="renderEventos()" style="background:#334155;color:white;border:1px solid #475569;"/>
+      <div class="search-box"><span class="search-icon">🔍</span><input type="text" id="busquedaEventos" placeholder="Buscar por nombre..." oninput="renderEventos()"/></div>
+      <select id="filtroEventoGrupo" onchange="renderEventos()"></select>
+      <select id="filtroEventoTipo" onchange="renderEventEventos()"><option value="todos">Todos</option><option value="pos">Solo positivos</option><option value="neg">Solo negativos</option><option value="evasión">Solo evasiones</option></select>
+      <select id="filtroEventoMateria" onchange="renderEventos()"><option value="todos">Todas las materias</option><option>Language</option><option>Mi Meta</option><option>Peace</option></select>
+      <input type="date" id="filtroEventoFecha" onchange="renderEventos()"/>
       <button class="btn-gray" onclick="limpiarFiltros()">✕ Limpiar</button>
     </div>
     <div id="eventosContent"></div>
   </div>
 
-  <!-- ══ CONSOLIDADO ══ -->
+  <!-- ══ CONSOLIDADO DE RECORRIDO ══ -->
   <div id="panel-consolidado" class="panel">
     <div class="top-panel">
-      <select id="filtroConsolidado">
-        <option value="todos">Todos los grupos</option>
-        <option>4-1</option><option>6-1</option><option>6-2</option>
-        <option>7-1</option><option>7-2</option><option>8-1</option>
-      </select>
-      <button class="btn-blue"   onclick="renderConsolidado()">🔍 Ver consolidado</button>
+      <select id="filtroConsolidado"></select>
+      <button class="btn-blue" onclick="renderConsolidado()">🔍 Ver consolidado</button>
       <button class="btn-purple" onclick="exportarCSV()">⬇️ Exportar CSV</button>
     </div>
     <div id="consolidadoContent"></div>
+  </div>
+
+  <!-- ══ NUEVO: PLANILLA DE CALIFICACIONES POR GRUPO ══ -->
+  <div id="panel-notas" class="panel">
+    <div class="top-panel" style="background:rgba(255,255,255,0.04);padding:14px;border-radius:12px;">
+      <select id="notasFiltroGrupo" onchange="renderPlanillaNotas()"></select>
+      <select id="notasFiltroMateria" onchange="renderPlanillaNotas()">
+        <option value="Language">Language</option>
+        <option value="Mi Meta">Mi Meta</option>
+        <option value="Peace">Peace</option>
+      </select>
+      <div style="display:flex;align-items:center;gap:6px;font-size:0.88rem;">
+        <span>XP para Nota Max (5.0):</span>
+        <input type="number" id="xpMaxNota" value="300" style="width:75px;padding:6px;" onchange="renderPlanillaNotas()"/>
+      </div>
+      <button class="btn-purple" onclick="exportarNotasCSV()">⬇️ Exportar Planilla CSV</button>
+    </div>
+    <div id="notasContent" class="table-wrap"></div>
   </div>
 
   <!-- ══ CONFIGURACIÓN ══ -->
   <div id="panel-config" class="panel">
     <div style="max-width:520px;">
       <h3 style="color:#38bdf8;margin-bottom:12px;">Gestionar grupos</h3>
-      <p class="muted" style="font-size:0.85rem;margin-bottom:12px;">Agrega o elimina grupos según necesites.</p>
       <div style="display:flex;gap:8px;margin-bottom:14px;">
-        <input type="text" id="nuevoGrupo" placeholder="Ej: 4-2, 5-1, 9-A" style="flex:1;"/>
+        <input type="text" id="nuevoGrupo" placeholder="Ej: 6-1, 7-2" style="flex:1; background:#e2e8f0; color:#0f172a;"/>
         <button class="btn-green" onclick="agregarGrupo()">➕ Agregar grupo</button>
       </div>
       <div id="listaGrupos" style="background:rgba(255,255,255,0.04);border-radius:10px;padding:12px;margin-bottom:14px;max-height:150px;overflow-y:auto;"></div>
 
       <h3 style="color:#38bdf8;margin-bottom:12px;">Umbrales de positivos por grupo</h3>
-      <p class="muted" style="font-size:0.85rem;margin-bottom:14px;">Positivos semanales necesarios para reconocimiento.</p>
       <div id="umbralesForm"></div>
       <button class="btn-blue" style="margin-top:12px;" onclick="guardarUmbrales()">💾 Guardar umbrales</button>
 
       <hr style="border-color:rgba(255,255,255,0.1);margin:24px 0;"/>
-      <h3 style="color:#38bdf8;margin-bottom:12px;">Respaldo de datos</h3>
-      <p class="muted" style="font-size:0.85rem;margin-bottom:12px;">Exporta todos los datos en JSON para restaurarlos si se borra el caché del navegador.</p>
-      <div style="display:flex;gap:8px;flex-wrap:wrap;">
-        <button class="btn-teal"   onclick="exportarRespaldo()">⬇️ Exportar respaldo JSON</button>
-        <label  class="btn-amber"  style="cursor:pointer;display:inline-block;">
-          ⬆️ Restaurar respaldo
-          <input type="file" id="fileRestaurar" accept=".json" style="display:none;" onchange="restaurarRespaldo(event)"/>
-        </label>
-      </div>
-
-      <hr style="border-color:rgba(255,255,255,0.1);margin:24px 0;"/>
-      <h3 style="color:#38bdf8;margin-bottom:12px;">Credenciales de acceso</h3>
-      <input type="password" id="newPass1" placeholder="Nueva contraseña 1" style="width:100%;margin-bottom:8px;"/>
-      <input type="password" id="newPass2" placeholder="Nueva contraseña 2" style="width:100%;margin-bottom:8px;"/>
+      <h3>Credenciales de acceso</h3>
+      <input type="password" id="newPass1" placeholder="Nueva contraseña 1" style="width:100%;margin-bottom:8px;background:#334155;color:white;"/>
+      <input type="password" id="newPass2" placeholder="Nueva contraseña 2" style="width:100%;margin-bottom:8px;background:#334155;color:white;"/>
       <button class="btn-amber" onclick="cambiarCredenciales()">🔑 Actualizar</button>
-      <div id="configMsg" style="margin-top:10px;font-size:0.85rem;"></div>
     </div>
   </div>
 
-</div><!-- /container -->
-</div><!-- /mainContent -->
+</div>
+</div>
 
 <script>
 /* ══════════════════════════════════════════════════
-    CONSTANTES
+    ESTADO GLOBAL Y PERSISTENCIA
 ══════════════════════════════════════════════════ */
-const GRUPOS   = ['4-1','6-1','6-2','7-1','7-2','8-1'];
-const MATERIAS = ['Language','Mi Meta','Peace'];
-const UMBRALES_DEFAULT = {'4-1':3,'6-1':10,'6-2':7,'7-1':6,'7-2':6,'8-1':5};
-const DIAS_SEMANA = ['Dom','Lun','Mar','Mié','Jue','Vie','Sáb'];
+let GRUPOS = JSON.parse(localStorage.getItem('ag_grupos')) || ['4-1','6-1','6-2','7-1','7-2','8-1'];
+let umbrales = JSON.parse(localStorage.getItem('ag_umbrales')) || {'4-1':5,'6-1':10,'6-2':7,'7-1':6,'7-2':6,'8-1':5};
+let notasManuales = JSON.parse(localStorage.getItem('ag_notas_manuales')) || {}; 
 
-const MOTIVOS_NEG = [
-  '🗣️ Interrupciones reiteradas','📱 Uso de celular',
-  '😤 Falta de respeto','🚶 Salida sin permiso',
-  '📚 Sin materiales','🎮 Juegos en clase','✏️ Otro'
-];
-const MOTIVOS_EVASION = [
-  '🚶 Salida sin permiso',
-  '🎮 Actividad no autorizada',
-  '🚬 Lugar prohibido',
-  '✏️ Otro'
-];
-const MOTIVOS_POS = [
-  '🙋 Participación activa','📝 Tarea completa',
-  '🤝 Trabajo en equipo','💡 Aporte creativo',
-  '🏅 Comportamiento ejemplar','✏️ Otro'
-];
-
-/* ══════════════════════════════════════════════════
-    ESTADO GLOBAL
-══════════════════════════════════════════════════ */
 let PASS1 = localStorage.getItem('ag_p1') || 'Docente2026';
 let PASS2 = localStorage.getItem('ag_p2') || 'AulaGameSecure';
-let umbrales    = JSON.parse(localStorage.getItem('ag_umbrales') || 'null') || {...UMBRALES_DEFAULT};
 let estudiantes = [];
-let registros   = [];
-let _motivoPendiente   = null;
+let registros = [];
+let _motivoPendiente = null;
 let _motivoSeleccionado = null;
 
-/* ══════════════════════════════════════════════════
-    LOGIN
-══════════════════════════════════════════════════ */
 function verificarAcceso() {
-  const p1 = document.getElementById('pass1').value;
-  const p2 = document.getElementById('pass2').value;
-  if (p1===PASS1 && p2===PASS2) {
+  if (document.getElementById('pass1').value===PASS1 && document.getElementById('pass2').value===PASS2) {
     document.getElementById('loginOverlay').style.display = 'none';
     document.getElementById('mainContent').style.display  = 'block';
     init();
-  } else {
-    document.getElementById('errorMsg').textContent = '❌ Credenciales incorrectas.';
-    document.getElementById('pass1').value = '';
-    document.getElementById('pass2').value = '';
-  }
+  } else { document.getElementById('errorMsg').textContent = '❌ Credenciales incorrectas.'; }
 }
-['pass1','pass2'].forEach(id => {
-  const el = document.getElementById(id);
-  if(el) el.addEventListener('keydown', e=>{ if(e.key==='Enter') verificarAcceso(); });
-});
 
-/* ══════════════════════════════════════════════════
-    INITIALIZATION & PERSISTENCE
-══════════════════════════════════════════════════ */
+function mostrarPanel(panelId, boton) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('panel-' + panelId).classList.add('active');
+  if(boton) boton.classList.add('active');
+}
+
+function movedToTab(tabName) {
+  if(tabName==='eventos') renderEventos();
+  if(tabName==='consolidado') renderConsolidado();
+  if(tabName==='notas') renderPlanillaNotas();
+  if(tabName==='config') renderConfig();
+}
+
 function init() {
-  cargarDatos();
-  renderBarraSemana();
-  renderTabla();
-  actualizarMsgRespaldo();
-}
-
-function cargarDatos() {
   estudiantes = JSON.parse(localStorage.getItem('ag_estudiantes') || '[]');
   registros   = JSON.parse(localStorage.getItem('ag_registros')   || '[]');
+  actualizarSelectsGrupos();
+  document.getElementById('barraInfoSemana').innerHTML = `<span class="chip chip-blue">Día de clase activo</span>`;
+  renderTabla();
+  if(!localStorage.getItem('ag_bienvenida_visto')) abrirModal('bienvenidaModal');
 }
 
 function guardar() {
   localStorage.setItem('ag_estudiantes', JSON.stringify(estudiantes));
   localStorage.setItem('ag_registros',   JSON.stringify(registros));
-  localStorage.setItem('ag_backup_ts',   new Date().toISOString());
-  actualizarMsgRespaldo();
-}
-
-function actualizarMsgRespaldo() {
-  const ts = localStorage.getItem('ag_backup_ts');
-  if (ts) {
-    const d = new Date(ts);
-    document.getElementById('respaldoMsg').textContent =
-      `💾 Último guardado local: ${d.toLocaleDateString('es-CO')} ${d.toLocaleTimeString('es-CO',{hour:'2-digit',minute:'2-digit'})}`;
-  }
-}
-
-/* ══════════════════════════════════════════════════
-    FECHAS Y SEMANA
-══════════════════════════════════════════════════ */
-function hoy() {
+  localStorage.setItem('ag_notas_manuales', JSON.stringify(notasManuales));
   const d = new Date();
-  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+  document.getElementById('respaldoMsg').textContent = `💾 Último guardado: ${d.toLocaleDateString()} ${d.toLocaleTimeString()}`;
 }
 
-function renderBarraSemana() {
-  const container = document.getElementById('barraInfoSemana');
-  if(container) container.innerHTML = `<span class="dia-chip hoy">${DIAS_SEMANA[new Date().getDay()]} (Hoy)</span>`;
-}
-
-function nivelPorXP(xp) {
-  if (xp<100)  return {label:'🐣 Novato',   max:100};
-  if (xp<300)  return {label:'🌱 Aprendiz', max:300};
-  if (xp<600)  return {label:'⚔️ Guerrero', max:600};
-  if (xp<1000) return {label:'🏆 Maestro',  max:1000};
-  return              {label:'🌟 Leyenda',  max:1000};
-}
-
-function negHoyCount(est) {
-  return registros.filter(r=>r.estudianteId===est.id&&r.tipo==='neg'&&r.fecha===hoy()).length;
-}
-
-/* ══════════════════════════════════════════════════
-    NUEVA ASISTENCIA INTERACTIVA
-══════════════════════════════════════════════════ */
-function marcarAsistencia(idx, valor) {
-  estudiantes[idx].asistenciaHoy = valor;
-  guardar();
-  renderTabla();
-}
-
-/* ══════════════════════════════════════════════════
-    NUEVO ORDENAMIENTO ALFABÉTICO (A-Z)
-══════════════════════════════════════════════════ */
-function ordenarAlfabeticamente() {
-  if (estudiantes.length === 0) {
-    alert("No hay estudiantes registrados para ordenar.");
-    return;
+function actualizarSelectsGrupos() {
+  const selects = ['gradoInput','gradoFiltro','filtroEventoGrupo','filtroConsolidado','editGrado','notasFiltroGrupo'];
+  selects.forEach(id => {
+    const el = document.getElementById(id);
+    if(!el) return;
+    const desc = (id==='gradoFiltro'||id==='filtroEventoGrupo'||id==='filtroConsolidado') ? 'Todos los grupos' : '— Seleccionar —';
+    el.innerHTML = id.includes('Input')||id.includes('edit') ? `<option value="">${desc}</option>` : `<option value="todos">${desc}</option>`;
+    GRUPOS.forEach(g => el.innerHTML += `<option value="${g}">${g}</option>`);
+  });
+  if(document.getElementById('notasFiltroGrupo').value === 'todos' && GRUPOS.length > 0) {
+    document.getElementById('notasFiltroGrupo').value = GRUPOS[0];
   }
-  // Ordena alfabéticamente respetando correctamente la configuración regional del español (Ñ y tildes)
-  estudiantes.sort((a, b) => a.nombre.localeCompare(b.nombre, 'es', { sensitivity: 'base' }));
-  guardar();
-  renderTabla();
 }
 
 /* ══════════════════════════════════════════════════
-    RENDERIZADO DE LA TABLA PRINCIPAL
+    LÓGICA DEL PANEL DE REGISTRO DIARIO
 ══════════════════════════════════════════════════ */
 function renderTabla() {
   const cuerpo = document.getElementById('cuerpoTabla');
   const filtroGrupo = document.getElementById('gradoFiltro').value;
   const busqueda = document.getElementById('busquedaInput').value.toLowerCase();
-  
   cuerpo.innerHTML = '';
   
   estudiantes.forEach((est, idx) => {
     if (filtroGrupo !== 'todos' && est.grado !== filtroGrupo) return;
     if (busqueda && !est.nombre.toLowerCase().includes(busqueda)) return;
     
-    const infoNivel = nivelPorXP(est.xp || 0);
-    const nHoy = negHoyCount(est);
-    const asist = est.asistenciaHoy || "";
+    const max = est.xp < 100 ? 100 : (est.xp < 300 ? 300 : 600);
+    const nHoy = registros.filter(r => r.estudianteId === est.id && r.tipo === 'neg' && r.fecha === hoy()).length;
     
-    let estadoBadge = '<span class="muted">Sin marcar</span>';
-    if (asist === 'presente') estadoBadge = '<span class="good">✓ Presente</span>';
-    if (asist === 'ausente') estadoBadge = '<span class="danger">✕ Ausente</span>';
-    
-    const tr = document.createElement('tr');
-    tr.innerHTML = `
+    cuerpo.innerHTML += `<tr>
       <td>${idx + 1}</td>
-      <td style="text-align:left; font-weight:bold;">${est.nombre}</td>
+      <td style="text-align:left; font-weight:bold; cursor:pointer; color:#38bdf8;" onclick="abrirEditar(${idx})">✏️ ${est.nombre}</td>
       <td><span class="chip chip-blue">${est.grado}</span></td>
-      <td>${infoNivel.label}</td>
-      <td><b style="color:#38bdf8;">${est.xp || 0}</b></td>
-      <td>
-        <div class="xpbar"><div class="xpfill" style="width:${Math.min(100, ((est.xp || 0)/infoNivel.max)*100)}%;"></div></div>
-      </td>
+      <td>${est.xp < 100 ? '🐣 Novato' : '🌱 Aprendiz'}</td>
+      <td><b>${est.xp || 0}</b></td>
+      <td><div class="xpbar"><div class="xpfill" style="width:${Math.min(100, ((est.xp||0)/max)*100)}%;"></div></div></td>
       <td><span class="good">${est.posSemana || 0}</span></td>
-      <td><span class="${nHoy >= 3 ? 'badge-obs' : 'danger'}">${nHoy}</span></td>
-      <td>${estadoBadge}</td>
+      <td><span class="${nHoy>=3?'badge-obs':'danger'}">${nHoy}</span></td>
+      <td>${est.asistenciaHoy==='presente'?'<span class="good">✓ Presente</span>':(est.asistenciaHoy==='ausente'?'<span class="danger">✕ Ausente</span>':'<span class="muted">Sin marcar</span>')}</td>
       <td>
-        <div style="display:flex; gap:4px; justify-content:center;">
-          <button class="btn-green" style="padding:4px 8px; font-size:0.75rem;" onclick="marcarAsistencia(${idx}, 'presente')" title="Presente">✓</button>
-          <button class="btn-red" style="padding:4px 8px; font-size:0.75rem;" onclick="marcarAsistencia(${idx}, 'ausente')" title="Ausente">✕</button>
-          <button class="btn-gray" style="padding:4px 8px; font-size:0.75rem; background:#475569;" onclick="marcarAsistencia(${idx}, '')" title="Quitar estado (Borrar)">🗑️</button>
-        </div>
+        <button class="btn-green" style="padding:3px 7px;" onclick="marcarAsistencia(${idx},'presente')">✓</button>
+        <button class="btn-red" style="padding:3px 7px;" onclick="marcarAsistencia(${idx},'ausente')">✕</button>
+        <button class="btn-gray" style="padding:3px 7px;" onclick="marcarAsistencia(${idx},'')">🗑️</button>
       </td>
       <td><span class="warning">${est.evasionesSemana || 0}</span></td>
       <td>
-        <button class="btn-blue" style="padding:4px 8px; font-size:0.75rem;" onclick="alert('Módulo de control de puntos')">⚡ Puntos</button>
+        <select style="padding:2px;font-size:0.75rem;" onchange="if(this.value){ clickPuntos(${idx},'pos',this.value); this.value=''; }"><option value="">➕ Pos</option><option>Language</option><option>Mi Meta</option><option>Peace</option></select>
+        <select style="padding:2px;font-size:0.75rem;" onchange="if(this.value){ clickPuntos(${idx},'neg',this.value); this.value=''; }"><option value="">✱ Neg</option><option>Language</option><option>Mi Meta</option><option>Peace</option></select>
+        <button class="btn-gray" style="padding:2px 5px;font-size:0.75rem;background:#b45309;" onclick="clickPuntos(${idx},'evasión','General')">🚶 Evasión</button>
       </td>
-    `;
-    cuerpo.appendChild(tr);
+    </tr>`;
   });
 }
 
-/* ══════════════════════════════════════════════════
-    ACCIONES Y OPERACIONES DE ESTUDIANTES
-══════════════════════════════════════════════════ */
+function marcarAsistencia(idx, val) { estudiantes[idx].asistenciaHoy = val; guardar(); renderTabla(); }
+function ordenarAlfabeticamente() { estudiantes.sort((a,b)=>a.nombre.localeCompare(b.nombre,'es')); guardar(); renderTabla(); }
+function hoy() { const d=new Date(); return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`; }
+
 function agregarEstudiante() {
   const nom = document.getElementById('nombreInput').value.trim();
   const gra = document.getElementById('gradoInput').value;
-  if(!nom || !gra) { alert('Ingresa nombre y grupo.'); return; }
-  
-  estudiantes.push({
-    id: 'est_' + Date.now() + Math.random().toString(36).substr(2,4),
-    nombre: nom,
-    grado: gra,
-    xp: 0,
-    posSemana: 0,
-    evasionesSemana: 0,
-    asistenciaHoy: ""
-  });
-  
-  document.getElementById('nombreInput').value = '';
-  guardar();
-  renderTabla();
+  if(!nom || !gra) return;
+  estudiantes.push({ id:'est_'+Date.now(), nombre:nom, grado:gra, xp:0, posSemana:0, evasionesSemana:0, asistenciaHoy:"" });
+  document.getElementById('nombreInput').value=''; guardar(); renderTabla();
 }
 
-function resetearTodo() {
-  if(confirm('¿Seguro que deseas eliminar TODOS los datos locales?')) {
-    estudiantes = [];
-    registros = [];
-    guardar();
-    renderTabla();
+/* ══════════════════════════════════════════════════
+    NUEVO MÓDULO: PLANILLA DE CALIFICACIONES REALES
+══════════════════════════════════════════════════ */
+function renderPlanillaNotas() {
+  const div = document.getElementById('notasContent');
+  const grupo = document.getElementById('notasFiltroGrupo').value;
+  const materia = document.getElementById('notasFiltroMateria').value;
+  const xpMax = parseFloat(document.getElementById('xpMaxNota').value) || 300;
+
+  if(!grupo || grupo==='todos') { div.innerHTML='<p class="muted">Selecciona un grupo específico para ver sus notas.</p>'; return; }
+  
+  const filtrados = estudiantes.filter(e => e.grado === grupo);
+  if(filtrados.length === 0) { div.innerHTML='<p class="muted">No hay estudiantes en este grupo.</p>'; return; }
+
+  let html = `<table>
+    <thead>
+      <tr>
+        <th style="text-align:left;">Estudiante</th>
+        <th>XP Total</th>
+        <th>Nota Juego (70%)</th>
+        <th>Nota Taller (15%)</th>
+        <th>Nota Evaluación (15%)</th>
+        <th>Nota Definitiva</th>
+      </tr>
+    </thead>
+    <tbody>`;
+
+  filtrados.forEach(e => {
+    // Cálculo nota de juego: Máximo 5.0 basado en regla de 3 con los XP acumulados
+    let notaJuego = (e.xp / xpMax) * 5;
+    if(notaJuego > 5) notaJuego = 5;
+    if(notaJuego < 1) notaJuego = 1.0; // Piso mínimo pedagógico
+    notaJuego = parseFloat(notaJuego.toFixed(2));
+
+    // Cargar notas manuales guardadas en caché
+    const keyTaller = `${e.id}_${materia}_taller`;
+    const keyEval   = `${e.id}_${materia}_eval`;
+    const nTaller = notasManuales[keyTaller] || "";
+    const nEval   = notasManuales[keyEval] || "";
+
+    // Calcular el promedio definitivo ponderado
+    const valTaller = parseFloat(nTaller) || 1.0;
+    const valEval   = parseFloat(nEval) || 1.0;
+    const definitiva = (notaJuego * 0.70) + (valTaller * 0.15) + (valEval * 0.15);
+
+    html += `<tr>
+      <td style="text-align:left;font-weight:bold;">${e.nombre}</td>
+      <td><span class="chip chip-blue">${e.xp} XP</span></td>
+      <td><b style="color:#38bdf8;">${notaJuego.toFixed(2)}</b></td>
+      <td><input type="number" step="0.1" min="1" max="5" class="input-nota" value="${nTaller}" onchange="guardarNotaManual('${e.id}','${materia}','taller',this.value)"/></td>
+      <td><input type="number" step="0.1" min="1" max="5" class="input-nota" value="${nEval}" onchange="guardarNotaManual('${e.id}','${materia}','eval',this.value)"/></td>
+      <td><span class="${definitiva>=3.5?'good':'danger'}" style="font-size:1rem;">${definitiva.toFixed(2)}</span></td>
+    </tr>`;
+  });
+
+  html += `</tbody></table>`;
+  div.innerHTML = html;
+}
+
+function guardarNotaManual(estId, materia, tipo, valor) {
+  const key = `${estId}_${materia}_${tipo}`;
+  if(valor === "" || isNaN(valor)) {
+    delete notasManuales[key];
+  } else {
+    let num = parseFloat(valor);
+    if(num > 5) num = 5; if(num < 1) num = 1;
+    notasManuales[key] = num.toFixed(1);
+  }
+  guardar();
+  renderPlanillaNotas();
+}
+
+function exportarNotasCSV() {
+  const grupo = document.getElementById('notasFiltroGrupo').value;
+  const materia = document.getElementById('notasFiltroMateria').value;
+  const xpMax = parseFloat(document.getElementById('xpMaxNota').value) || 300;
+  
+  let csv = `Planilla de Calificaciones - Grupo ${grupo} - Area ${materia}\n`;
+  csv += "Estudiante,XP,Nota Juego (70%),Nota Taller (15%),Nota Eval (15%),Definitiva\n";
+
+  estudiantes.filter(e => e.grado === grupo).forEach(e => {
+    let notaJuego = Math.min(5, Math.max(1, (e.xp / xpMax) * 5));
+    const nTaller = parseFloat(notasManuales[`${e.id}_${materia}_taller`]) || 1.0;
+    const nEval = parseFloat(notasManuales[`${e.id}_${materia}_eval`]) || 1.0;
+    const def = (notaJuego * 0.70) + (nTaller * 0.15) + (nEval * 0.15);
+    csv += `"${e.nombre}",${e.xp},${notaJuego.toFixed(2)},${nTaller.toFixed(1)},${nEval.toFixed(1)},${def.toFixed(2)}\n`;
+  });
+
+  const blob = new Blob([csv], {type:'text/csv;charset=utf-8;'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `Notas_${grupo}_${materia}.csv`;
+  a.click();
+}
+
+/* ══════════════════════════════════════════════════
+    GESTIÓN DE GRUPOS (ARREGLADO CORRECCIÓN)
+══════════════════════════════════════════════════ */
+function renderConfig() {
+  const list = document.getElementById('listaGrupos');
+  list.innerHTML = '';
+  GRUPOS.forEach(g => {
+    list.innerHTML += `<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px; background:rgba(255,255,255,0.04); padding:6px 12px; border-radius:8px;">
+      <span>Grupo: <b>${g}</b></span>
+      <button class="btn-red" style="padding:2px 8px; font-size:0.75rem;" onclick="eliminarGrupo('${g}')">🗑️ Eliminar</button>
+    </div>`;
+  });
+
+  const form = document.getElementById('umbralesForm');
+  form.innerHTML = '';
+  GRUPOS.forEach(g => {
+    form.innerHTML += `<div style="margin-bottom:8px;"><label style="display:inline-block;width:60px;">${g}:</label><input type="number" id="umb-${g}" value="${umbrales[g]||5}" style="width:70px;padding:4px;"/></div>`;
+  });
+}
+
+function agregarGrupo(){
+  const input = document.getElementById('nuevoGrupo');
+  const v = input.value.trim().toUpperCase();
+  if(!v || GRUPOS.includes(v)) { alert("Grupo no válido o ya existente."); return; }
+  GRUPOS.push(v);
+  localStorage.setItem('ag_grupos', JSON.stringify(GRUPOS));
+  input.value = '';
+  actualizarSelectsGrupos();
+  renderConfig();
+}
+
+function eliminarGrupo(g){
+  if(confirm(`¿Seguro que deseas eliminar el grupo ${g}?`)){
+    GRUPOS = GRUPOS.filter(x => x !== g);
+    localStorage.setItem('ag_grupos', JSON.stringify(GRUPOS));
+    actualizarSelectsGrupos();
+    renderConfig();
   }
 }
 
-function exportarRespaldo() {
-  const data = { estudiantes, registros, exportado: new Date().toISOString() };
-  const blob = new Blob([JSON.stringify(data,null,2)], {type:'application/json'});
-  const url  = URL.createObjectURL(blob);
-  const a    = document.createElement('a');
-  a.href = url;
-  a.download = `AulaGame_respaldo.json`;
-  a.click();
+/* ══════════════════════════════════════════════════
+    PUNTOS INTERACTIVOS (LÓGICA ANTERIOR COMPLETADA)
+══════════════════════════════════════════════════ */
+function clickPuntos(idx, tipo, materia) {
+  const est = estudiantes[idx];
+  _motivoPendiente = { est, idx, tipo, materia };
+  document.getElementById('motivoTitulo').textContent = tipo==='pos'?'➕ Positivo':'✱ Negativo';
+  document.getElementById('motivoEstudiante').textContent = est.nombre;
+  
+  const grid = document.getElementById('motivosGrid'); grid.innerHTML = ''; _motivoSeleccionado = null;
+  const lista = tipo==='pos'?MOTIVOS_POS:MOTIVOS_NEG;
+  
+  lista.forEach(m => {
+    const btn = document.createElement('button'); btn.className = 'btn-motivo'; btn.textContent = m;
+    btn.onclick = () => {
+      document.querySelectorAll('.btn-motivo').forEach(b=>b.classList.remove('pos-sel','neg-sel'));
+      btn.classList.add(tipo==='pos'?'pos-sel':'neg-sel'); _motivoSeleccionado = m;
+      document.getElementById('otroTexto').style.display = m.includes('Otro')?'block':'none';
+    };
+    grid.appendChild(btn);
+  });
+  abrirModal('motivoModal');
 }
+
+function confirmarMotivo() {
+  if(!_motivoSeleccionado) return;
+  let mot = _motivoSeleccionado;
+  if(mot.includes('Otro')) { mot = '✏️ ' + document.getElementById('otroTexto').value; }
+  cerrarModal('motivoModal');
+  
+  const p = _motivoPendiente;
+  registros.push({ id:'reg_'+Date.now(), estudianteId:p.est.id, nombre:p.est.nombre, grado:p.est.grado, tipo:p.tipo, materia:p.materia, motivo:mot, fecha:hoy() });
+  
+  if(p.tipo==='pos') {
+    p.est.xp += 10; p.est.posSemana += 1;
+    if(p.est.posSemana === (umbrales[p.est.grado]||5)) triggerReconocimiento(p.est);
+  } else {
+    p.est.xp = Math.max(0, p.est.xp - 5);
+    if(registros.filter(r=>r.estudianteId===p.est.id && r.tipo==='neg' && r.fecha===hoy()).length === 3) triggerObservador(p.est);
+  }
+  guardar(); renderTabla();
+}
+
+function abrirEditar(idx) {
+  document.getElementById('editIdx').value = idx;
+  document.getElementById('editNombre').value = estudiantes[idx].nombre;
+  document.getElementById('editGrado').value = estudiantes[idx].grado;
+  abrirModal('editModal');
+}
+function confirmarEdit() {
+  const idx = document.getElementById('editIdx').value;
+  estudiantes[idx].nombre = document.getElementById('editNombre').value;
+  estudiantes[idx].grado = document.getElementById('editGrado').value;
+  cerrarModal('editModal'); guardar(); renderTabla();
+}
+
+/* MODALES ACCIONES */
+function abrirModal(id){ document.getElementById(id).classList.add('show'); }
+function cerrarModal(id){ document.getElementById(id).classList.remove('show'); }
+function cerrarBienvenida(){ localStorage.setItem('ag_bienvenida_visto','true'); cerrarModal('bienvenidaModal'); }
+function abrirSalir(){ abrirModal('salirModal'); }
+function cerrarSalir(){ cerrarModal('salirModal'); document.getElementById('loginOverlay').style.display='flex'; document.getElementById('mainContent').style.display='none'; }
+function exportarYSalir(){ exportarRespaldo(); cerrarSalir(); }
+function guardarUmbrales(){ GRUPOS.forEach(g=>{ umbrales[g]=parseInt(document.getElementById(`umb-${g}`).value)||5; }); localStorage.setItem('ag_umbrales',JSON.stringify(umbrales)); alert('Umbrales guardados.'); }
+function cambiarCredenciales(){ PASS1=document.getElementById('newPass1').value; PASS2=document.getElementById('newPass2').value; localStorage.setItem('ag_p1',PASS1); localStorage.setItem('ag_p2',PASS2); alert('Credenciales actualizadas.'); }
+function resetearSemana(){ estudiantes.forEach(e=>{e.posSemana=0;e.evasionesSemana=0;e.asistenciaHoy=""}); guardar(); renderTabla(); }
+function resetearTodo(){ estudiantes=[]; registros=[]; guardar(); renderTabla(); }
+
+/* RESTO DE LOGICA COMPLEMENTARIA DE DESCARGAS */
+function descargarPlantilla() {
+  const blob = new Blob(["Nombre,Grupo\nJuan Perez,6-1"], {type:'text/csv'});
+  const a = document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='plantilla.csv'; a.click();
+}
+function importarCSV(e) {
+  const file = e.target.files[0]; if(!file) return;
+  const r = new FileReader();
+  r.onload = function(evt) {
+    evt.target.result.split('\n').slice(1).forEach(line => {
+      const cols = line.split(',');
+      if(cols.length>=2 && cols[0].trim()) estudiantes.push({ id:'est_'+Date.now()+Math.random(), nombre:cols[0].trim(), grado:cols[1].trim(), xp:0, posSemana:0, evasionesSemana:0, asistenciaHoy:"" });
+    });
+    guardar(); renderTabla(); alert('Lista importada.');
+  }; r.readAsText(file);
+}
+function restaurarRespaldoBienvenida(e){
+  const file=e.target.files[0]; if(!file) return;
+  const r=new FileReader(); r.onload=function(evt){ const d=JSON.parse(evt.target.result); if(d.estudiantes){ estudiantes=d.estudiantes; registros=d.registros||[]; guardar(); renderTabla(); cerrarBienvenida(); } }; r.readAsText(file);
+}
+exportarRespaldo = function() {
+  const blob = new Blob([JSON.stringify({estudiantes,registros,notasManuales})], {type:'application/json'});
+  const a = document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='AulaGame_Respaldo.json'; a.click();
+};
 </script>
 </body>
 </html>
