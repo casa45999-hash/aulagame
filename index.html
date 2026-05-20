@@ -279,14 +279,31 @@ function renderTabla() {
 function renderConsolidado() {
   const div = document.getElementById('consolidadoContent');
   const semana = semanaActual();
-  let html = `<h3 style="color:#38bdf8;margin-bottom:16px;">Semana ${semana}</h3>`;
+  
+  // Agregamos selector de grupo
+  let html = `<div style="margin-bottom:16px;">
+    <label style="color:#94a3b8;margin-right:10px;">Filtrar por grupo:</label>
+    <select id="filtroGrupoConsolidado" onchange="renderConsolidado()" style="padding:8px 12px;">
+      <option value="todos">Todos los grupos</option>
+      <option>4-1</option><option>6-1</option><option>6-2</option>
+      <option>7-1</option><option>7-2</option><option>8-1</option>
+    </select>
+  </div>`;
+  
+  const filtroGrupo = document.getElementById('filtroGrupoConsolidado') ? document.getElementById('filtroGrupoConsolidado').value : 'todos';
+  let listaFiltrada = estudiantes;
+  if (filtroGrupo !== 'todos') {
+    listaFiltrada = estudiantes.filter(e => e.grado === filtroGrupo);
+  }
+  
+  html += `<h3 style="color:#38bdf8;margin-bottom:16px;">Semana ${semana} ${filtroGrupo !== 'todos' ? '- Grupo ' + filtroGrupo : ''}</h3>`;
   html += `<table><thead><tr>
     <th>#</th><th>Nombre</th><th>Grupo</th>
     <th>➕ Pos.</th><th>✱ Neg.</th><th>🚶 Evasiones</th>
     <th>📋 Asistencia</th><th>XP</th>
   </tr></thead><tbody>`;
 
-  estudiantes.forEach((est,i)=>{
+  listaFiltrada.forEach((est,i)=>{
     const posS = est.posSemanales||0;
     const negTot = registros.filter(r=>r.estudianteId===est.id&&r.tipo==='neg'&&r.semana===semana).length;
     const asisSemanales = registros.filter(r=>r.estudianteId===est.id&&r.tipo==='asistencia'&&r.semana===semana);
@@ -306,7 +323,20 @@ function renderConsolidado() {
     </tr>`;
   });
   
+  // Estadísticas del grupo filtrado
+  const totalPos = listaFiltrada.reduce((s,e)=>s+(e.posSemanales||0),0);
+  const totalNeg = listaFiltrada.reduce((s,e)=>s+registros.filter(r=>r.estudianteId===e.id&&r.tipo==='neg'&&r.semana===semana).length,0);
+  const totalEvas = listaFiltrada.reduce((s,e)=>s+(e.evasiones||0),0);
+  
   html += `</tbody></table>`;
+  html += `<div style="margin-top:16px;padding:12px;background:rgba(255,255,255,0.04);border-radius:10px;">
+    <strong style="color:#38bdf8;">Resumen:</strong> 
+    <span class="good">${listaFiltrada.length} estudiantes</span> · 
+    <span style="color:#4ade80;">+${totalPos} positivos</span> · 
+    <span style="color:#f87171;">*${totalNeg} negativos</span> · 
+    <span style="color:#ef4444;">🚶 ${totalEvas} evasiones</span>
+  </div>`;
+  
   div.innerHTML = html;
 }
 
