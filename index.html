@@ -68,6 +68,22 @@
         <option>7-1</option><option>7-2</option><option>8-1</option>
       </select>
       <button class="btn-blue" onclick="agregarEstudiante()">➕ Agregar</button>
+    </div>
+
+    <div class="top-panel" style="background:rgba(255,255,255,0.04);padding:12px;border-radius:12px;">
+      <label style="color:#94a3b8;margin-right:10px;">🔍 Filtrar:</label>
+      <select id="filtroGrupoRegistro" onchange="renderTabla()">
+        <option value="todos">Todos los grupos</option>
+        <option>4-1</option><option>6-1</option><option>6-2</option>
+        <option>7-1</option><option>7-2</option><option>8-1</option>
+      </select>
+      <label style="color:#94a3b8;margin-left:20px;margin-right:10px;">📊 Ordenar:</label>
+      <select id="ordenRegistro" onchange="renderTabla()">
+        <option value="nombre">Nombre (A-Z)</option>
+        <option value="positivos">Positivos (Mayor a menor)</option>
+        <option value="xp">XP (Mayor a menor)</option>
+      </select>
+      <button class="btn-purple" onclick="verRanking()" style="margin-left:20px;">🏆 Ver ranking</button>
       <label class="btn-green" style="cursor:pointer;display:inline-block;padding:9px 14px;border-radius:10px;font-size:0.88rem;font-weight:bold;">
         📋 Importar CSV
         <input type="file" id="fileImportar" accept=".csv" style="display:none;" onchange="importarCSV(event)"/>
@@ -238,9 +254,28 @@ function eliminar(idx) {
 // RENDER TABLA
 function renderTabla() {
   const tbody = document.getElementById('cuerpoTabla');
-  if (!estudiantes.length) { tbody.innerHTML='<tr><td colspan="9" class="muted">No hay estudiantes</td></tr>'; return; }
+  const filtroGrupo = document.getElementById('filtroGrupoRegistro') ? document.getElementById('filtroGrupoRegistro').value : 'todos';
+  const orden = document.getElementById('ordenRegistro') ? document.getElementById('ordenRegistro').value : 'nombre';
+  
+  // Aplicar filtro por grupo
+  let lista = estudiantes;
+  if (filtroGrupo !== 'todos') {
+    lista = estudiantes.filter(e => e.grado === filtroGrupo);
+  }
+  
+  // Aplicar ordenamiento
+  if (orden === 'nombre') {
+    lista.sort((a, b) => a.nombre.localeCompare(b.nombre));
+  } else if (orden === 'positivos') {
+    lista.sort((a, b) => (b.posSemanales || 0) - (a.posSemanales || 0));
+  } else if (orden === 'xp') {
+    lista.sort((a, b) => (b.xp || 0) - (a.xp || 0));
+  }
+  
+  if (!lista.length) { tbody.innerHTML='<tr><td colspan="9" class="muted">No hay estudiantes en este grupo</td></tr>'; return; }
 
-  tbody.innerHTML = estudiantes.map((est,idx)=>{
+  tbody.innerHTML = lista.map((est,idx)=>{
+    const estIdx = estudiantes.indexOf(est);
     const posS = est.posSemanales||0;
     const negD = registros.filter(r=>r.estudianteId===est.id&&r.tipo==='neg'&&r.fecha===hoy()).length;
     const negMaxAlcanzado = negD >= 3;
@@ -436,6 +471,36 @@ function importarCSV(e) {
   };
   reader.readAsText(file, 'UTF-8');
   e.target.value = '';
+}
+
+// RANKING
+function verRanking() {
+  const ranking = [...estudiantes].sort((a, b) => (b.posSemanales || 0) - (a.posSemanales || 0));
+  
+  let html = '<div style="max-width:600px;margin:20px auto;background:rgba(255,255,255,0.05);padding:20px;border-radius:15px;">';
+  html += '<h2 style="color:#f59e0b;text-align:center;margin-bottom:20px;">🏆 RANKING DE PUNTOS POSITIVOS</h2>';
+  html += '<table style="width:100%;border-collapse:collapse;">';
+  html += '<thead><tr style="background:#f59e0b;color:#000;"><th style="padding:10px;">Posición</th><th style="padding:10px;">Estudiante</th><th style="padding:10px;">Grupo</th><th style="padding:10px;">Positivos</th><th style="padding:10px;">XP</th></tr></thead>';
+  html += '<tbody>';
+  
+  ranking.forEach((est, i) => {
+    const medal = i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : (i+1);
+    html += `<tr style="background:rgba(255,255,255,0.04);border-bottom:1px solid rgba(255,255,255,0.1);">
+      <td style="padding:10px;text-align:center;font-weight:bold;color:#f59e0b;">${medal}</td>
+      <td style="padding:10px;">${est.nombre}</td>
+      <td style="padding:10px;text-align:center;">${est.grado}</td>
+      <td style="padding:10px;text-align:center;color:#4ade80;font-weight:bold;">+${est.posSemanales||0}</td>
+      <td style="padding:10px;text-align:center;color:#38bdf8;font-weight:bold;">${est.xp||0}</td>
+    </tr>`;
+  });
+  
+  html += '</tbody></table></div>';
+  
+  // Mostrar en un alert estilo modal
+  const modal = document.createElement('div');
+  modal.style.cssText = 'position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.8);display:flex;align-items:center;justify-content:center;z-index:1000;';
+  modal.innerHTML = `<div style="background:#1e293b;border:2px solid #f59e0b;border-radius:15px;padding:20px;max-height:80vh;overflow-y:auto;width:90%;max-width:700px;">${html}<button class="btn-blue" style="width:100%;margin-top:20px;" onclick="this.parentElement.parentElement.remove()">Cerrar</button></div>`;
+  document.body.appendChild(modal);
 }
 
 // INIT
