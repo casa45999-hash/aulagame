@@ -54,8 +54,8 @@
 
   <div class="tabs">
     <button class="tab active" onclick="mostrarPanel('registro',this)">📋 Registro diario</button>
-    <button class="tab" onclick="mostrarPanel('consolidado',this)">📊 Consolidado</button>
-    <button class="tab" onclick="mostrarPanel('config',this)">⚙️ Config</button>
+    <button class="tab" onclick="visiblePanel('consolidado',this)">📊 Consolidado</button>
+    <button class="tab" onclick="visiblePanel('config',this)">⚙️ Config</button>
   </div>
 
   <!-- REGISTRO DIARIO -->
@@ -105,12 +105,18 @@
   <!-- CONFIG -->
   <div id="panel-config" class="panel">
     <div style="max-width:520px;">
-      <h3 style="color:#38bdf8;margin-bottom:12px;">Umbrales por grupo</h3>
+      <h3 style="color:#38bdf8;margin-bottom:12px;">Umbrales por grupo (Límite Negativos)</h3>
       <div id="umbralesForm"></div>
       <button class="btn-blue" style="margin-top:12px;" onclick="guardarUmbrales()">💾 Guardar</button>
+      
       <hr style="border-color:rgba(255,255,255,0.1);margin:24px 0;"/>
-      <h3 style="color:#38bdf8;margin-bottom:12px;">Descargar respaldo</h3>
-      <button class="btn-teal" onclick="exportarRespaldo()">⬇️ Exportar JSON</button>
+      
+      <h3 style="color:#38bdf8;margin-bottom:12px;">Gestión de respaldos</h3>
+      <div style="display:flex; gap:10px; flex-wrap:wrap;">
+        <button class="btn-teal" onclick="exportarRespaldo()">⬇️ Exportar JSON</button>
+        <input type="file" id="importInput" accept=".json" style="display:none;" onchange="importarRespaldo(this)"/>
+        <button class="btn-amber" onclick="document.getElementById('importInput').click()">⬆️ Importar JSON</button>
+      </div>
     </div>
   </div>
 
@@ -118,36 +124,26 @@
 </div>
 
 <script>
+// Configuración básica e inicialización segura de variables globales
 const GRUPOS = ['4-1','6-1','6-2','7-1','7-2','8-1'];
 const UMBRALES_DEFAULT = {'4-1':3,'6-1':10,'6-2':7,'7-1':6,'7-2':6,'8-1':5};
+const PASS1 = 'Docente2026';
+const PASS2 = 'AulaGameSecure';
 
-let PASS1 = localStorage.getItem('ag_p1') || 'Docente2026';
-let PASS2 = localStorage.getItem('ag_p2') || 'AulaGameSecure';
-let umbrales = JSON.parse(localStorage.getItem('ag_umbrales') || 'null') || {...UMBRALES_DEFAULT};
+let umbrales = {...UMBRALES_DEFAULT};
 let estudiantes = [];
 let registros = [];
 
-// LOGIN
-function verificarAcceso() {
-  const p1 = document.getElementById('pass1').value;
-  const p2 = document.getElementById('pass2').value;
-  if (p1===PASS1 && p2===PASS2) {
-    document.getElementById('loginOverlay').style.display = 'none';
-    document.getElementById('mainContent').style.display  = 'block';
-    init();
-  } else {
-    document.getElementById('errorMsg').textContent = '❌ Credenciales incorrectas.';
-    document.getElementById('pass1').value = '';
-    document.getElementById('pass2').value = '';
-  }
-}
-document.getElementById('pass1').addEventListener('keydown', e=>{ if(e.key==='Enter') verificarAcceso(); });
-document.getElementById('pass2').addEventListener('keydown', e=>{ if(e.key==='Enter') verificarAcceso(); });
-
 // PERSISTENCIA
 function cargarDatos() {
-  estudiantes = JSON.parse(localStorage.getItem('ag_estudiantes') || '[]');
-  registros   = JSON.parse(localStorage.getItem('ag_registros')   || '[]');
+  try {
+    estudiantes = JSON.parse(localStorage.getItem('ag_estudiantes') || '[]');
+    registros   = JSON.parse(localStorage.getItem('ag_registros')   || '[]');
+    const savedUmbrales = localStorage.getItem('ag_umbrales');
+    if (savedUmbrales) umbrales = JSON.parse(savedUmbrales);
+  } catch(e) {
+    console.error("Error cargando LocalStorage", e);
+  }
 }
 
 function guardar() {
@@ -155,6 +151,23 @@ function guardar() {
   localStorage.setItem('ag_registros',   JSON.stringify(registros));
 }
 
+// LOGIN
+function verificarAcceso() {
+  const p1 = document.getElementById('pass1').value;
+  const p2 = document.getElementById('pass2').value;
+  if (p1 === PASS1 && p2 === PASS2) {
+    document.getElementById('loginOverlay').style.display = 'none';
+    document.getElementById('mainContent').style.display  = 'block';
+    sessionStorage.setItem('ag_logged', 'true');
+    renderTabla();
+  } else {
+    document.getElementById('errorMsg').textContent = '❌ Credenciales incorrectas.';
+    document.getElementById('pass1').value = '';
+    document.getElementById('pass2').value = '';
+  }
+}
+
+// RESPALDOS JSON
 function exportarRespaldo() {
   const data = { estudiantes, registros, umbrales, exportado: new Date().toISOString() };
   const blob = new Blob([JSON.stringify(data,null,2)], {type:'application/json'});
@@ -166,7 +179,38 @@ function exportarRespaldo() {
   URL.revokeObjectURL(url);
 }
 
-// FUNCIONES
+function importarRespaldo(input) {
+  const archivo = input.files[0];
+  if (!archivo) return;
+
+  if (!confirm("⚠️ Al importar este archivo se reemplazarán todos los estudiantes y registros actuales. ¿Deseas continuar?")) { 
+    input.value = ''; 
+    return; 
+  }
+
+  const lector = new FileReader();
+  lector.onload = function(e) {
+    try {
+      const data = JSON.parse(e.target.result);
+      if (data.estudiantes && data.registros) {
+        estudiantes = data.estudiantes;
+        registros = data.registros;
+        if (data.umbrales) umbrales = data.umbrales;
+        guardar();
+        renderTabla();
+        alert("✅ Respaldo cargado correctamente.");
+      } else {
+        alert("❌ El archivo no corresponde a un formato válido de Aula Game.");
+      }
+    } catch (err) {
+      alert("❌ Error al procesar el archivo JSON.");
+    }
+    input.value = '';
+  };
+  lector.readAsText(archivo);
+}
+
+// CONTROL DE FECHAS
 function hoy() {
   const d = new Date();
   return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
@@ -183,66 +227,81 @@ function semanaActual() {
   return `${d.getFullYear()}-S${Math.ceil((((d-onejan)/86400000)+onejan.getDay()+1)/7)}`;
 }
 
+// FUNCIONES OPERATIVAS
 function agregarEstudiante() {
   const nombre = document.getElementById('nombreInput').value.trim();
   const grado  = document.getElementById('gradoInput').value;
-  if (!nombre||!grado) { alert('Completa nombre y grupo.'); return; }
+  if (!nombre || !grado) { alert('Completa nombre y grupo.'); return; }
+  
   const duplicado = estudiantes.find(e=>e.nombre.toLowerCase()===nombre.toLowerCase() && e.grado===grado);
   if (duplicado) { alert('⚠️ Este estudiante ya existe en este grupo.'); return; }
-  const id = Date.now()+Math.random();
-  estudiantes.push({id,nombre,grado,xp:0,posSemanales:0,evasiones:0,asistencias:{}});
+  
+  const id = Date.now() + Math.random();
+  estudiantes.push({id, nombre, grado, xp:0, posSemanales:0, evasiones:0, asistencias:{}});
   document.getElementById('nombreInput').value='';
-  guardar(); renderTabla();
+  guardar(); 
+  renderTabla();
 }
 
-function addPos(idx) {
-  const est = estudiantes[idx];
+function addPos(id) {
+  const est = estudiantes.find(e => e.id === id);
+  if(!est) return;
   est.xp = (est.xp||0)+10;
   est.posSemanales = (est.posSemanales||0)+1;
   registros.push({estudianteId:est.id,nombre:est.nombre,grado:est.grado,tipo:'pos',motivo:'Positivo',fecha:hoy(),hora:horaActual(),semana:semanaActual()});
   guardar(); renderTabla();
 }
 
-function addNeg(idx) {
-  const est = estudiantes[idx];
+function addNeg(id) {
+  const est = estudiantes.find(e => e.id === id);
+  if(!est) return;
   registros.push({estudianteId:est.id,nombre:est.nombre,grado:est.grado,tipo:'neg',motivo:'Negativo',fecha:hoy(),hora:horaActual(),semana:semanaActual()});
+  
+  const limiteGrupo = umbrales[est.grado] || 3;
+  const negHoy = registros.filter(r=>r.estudianteId===est.id && r.tipo==='neg' && r.fecha===hoy()).length;
+  if(negHoy >= limiteGrupo) {
+    alert(`🚨 ¡ALERTA! ${est.nombre} de ${est.grado} alcanzó el límite diario de negativos (${negHoy}/${limiteGrupo}).`);
+  }
   guardar(); renderTabla();
 }
 
-function registrarAsistencia(idx, estado) {
-  const est = estudiantes[idx];
+function registrarAsistencia(id, estado) {
+  const est = estudiantes.find(e => e.id === id);
+  if(!est) return;
   if (!est.asistencias) est.asistencias = {};
   est.asistencias[hoy()] = estado;
   registros.push({estudianteId:est.id,nombre:est.nombre,grado:est.grado,tipo:'asistencia',motivo:estado.toUpperCase(),fecha:hoy(),hora:horaActual(),semana:semanaActual()});
   guardar(); renderTabla();
 }
 
-function registrarEvasion(idx) {
-  const est = estudiantes[idx];
+function registrarEvasion(id) {
+  const est = estudiantes.find(e => e.id === id);
+  if(!est) return;
   est.evasiones = (est.evasiones||0)+1;
   registros.push({estudianteId:est.id,nombre:est.nombre,grado:est.grado,tipo:'evasion',motivo:'Evasión de clase',fecha:hoy(),hora:horaActual(),semana:semanaActual()});
   guardar(); renderTabla();
-  alert(`⚠️ ${est.nombre} tiene ${est.evasiones} evasión(es)`);
+  alert(`⚠️ ${est.nombre} acumuló ${est.evasiones} evasión(es)`);
 }
 
-function eliminar(idx) {
-  const est = estudiantes[idx];
-  if (!confirm(`¿Eliminar a ${est.nombre}?`)) return;
-  const id = est.id;
-  estudiantes.splice(idx,1);
+function eliminar(id) {
+  const est = estudiantes.find(e => e.id === id);
+  if (!est || !confirm(`¿Eliminar a ${est.nombre}?`)) return;
+  estudiantes = estudiantes.filter(e => e.id !== id);
   registros = registros.filter(r=>r.estudianteId!==id);
   guardar(); renderTabla();
 }
 
-// RENDER TABLA
+// INTERFAZ Y TABLAS
 function renderTabla() {
   const tbody = document.getElementById('cuerpoTabla');
+  if (!tbody) return;
+  
   const filtroGrupo = document.getElementById('filtroGrupoRegistro').value;
   const orden = document.getElementById('ordenRegistro').value;
   
-  let lista = estudiantes;
+  let lista = [...estudiantes]; 
   if (filtroGrupo !== 'todos') {
-    lista = estudiantes.filter(e => e.grado === filtroGrupo);
+    lista = lista.filter(e => e.grado === filtroGrupo);
   }
   
   if (orden === 'nombre') {
@@ -253,13 +312,15 @@ function renderTabla() {
     lista.sort((a, b) => (b.xp || 0) - (a.xp || 0));
   }
   
-  if (!lista.length) { tbody.innerHTML='<tr><td colspan="9" class="muted">No hay estudiantes en este grupo</td></tr>'; return; }
+  if (!lista.length) { 
+    tbody.innerHTML='<tr><td colspan="9" class="muted">No hay estudiantes en este grupo</td></tr>'; 
+    return; 
+  }
 
-  tbody.innerHTML = lista.map((est,displayIdx)=>{
-    const idx = estudiantes.indexOf(est);
+  tbody.innerHTML = lista.map((est, displayIdx)=>{
     const posS = est.posSemanales||0;
-    const negD = registros.filter(r=>r.estudianteId===est.id&&r.tipo==='neg'&&r.fecha===hoy()).length;
-    const asisHoy = est.asistencias ? est.asistencias[hoy()] : '';
+    const negD = registros.filter(r=>r.estudianteId===est.id && r.tipo==='neg' && r.fecha===hoy()).length;
+    const limiteGrupo = umbrales[est.grado] || 3;
     
     return `<tr>
       <td>${displayIdx+1}</td>
@@ -267,40 +328,41 @@ function renderTabla() {
       <td>${est.grado}</td>
       <td class="good">${est.xp||0}</td>
       <td>${posS}</td>
-      <td class="${negD>=3?'danger':'good'}">${negD}/3</td>
+      <td class="${negD>=limiteGrupo?'danger':'good'}">${negD}/${limiteGrupo}</td>
       <td style="white-space:nowrap;">
-        <button class="btn-teal" style="padding:5px 8px;font-size:0.75rem;" onclick="registrarAsistencia(${idx},'presente')">P</button>
-        <button class="btn-gray" style="padding:5px 8px;font-size:0.75rem;" onclick="registrarAsistencia(${idx},'ausente')">A</button>
-        <button class="btn-amber" style="padding:5px 8px;font-size:0.75rem;" onclick="registrarAsistencia(${idx},'justificada')">J</button>
+        <button class="btn-teal" style="padding:5px 8px;font-size:0.75rem;" onclick="registrarAsistencia(${est.id},'presente')">P</button>
+        <button class="btn-gray" style="padding:5px 8px;font-size:0.75rem;" onclick="registrarAsistencia(${est.id},'ausente')">A</button>
+        <button class="btn-amber" style="padding:5px 8px;font-size:0.75rem;" onclick="registrarAsistencia(${est.id},'justificada')">J</button>
       </td>
       <td style="font-weight:bold;color:#f87171;min-width:120px;">
         <span style="background:rgba(239,68,68,0.3);padding:8px 12px;border-radius:8px;margin-right:6px;font-size:1.1rem;">${est.evasiones||0}</span>
-        <button class="btn-red" style="padding:8px 12px;" onclick="registrarEvasion(${idx})">+</button>
+        <button class="btn-red" style="padding:8px 12px;" onclick="registrarEvasion(${est.id})">+</button>
       </td>
       <td style="white-space:nowrap;">
-        <button class="btn-green" style="padding:5px 8px;" onclick="addPos(${idx})">+</button>
-        <button class="btn-red" style="padding:5px 8px;" onclick="addNeg(${idx})">*</button>
-        <button class="btn-gray" style="padding:5px 8px;" onclick="eliminar(${idx})">🗑️</button>
+        <button class="btn-green" style="padding:5px 8px;" onclick="addPos(${est.id})">+</button>
+        <button class="btn-red" style="padding:5px 8px;" onclick="addNeg(${est.id})">*</button>
+        <button class="btn-gray" style="padding:5px 8px;" onclick="eliminar(${est.id})">🗑️</button>
       </td>
     </tr>`;
   }).join('');
 }
 
-// RANKING
 function verRanking() {
   const filtroGrupo = document.getElementById('filtroGrupoRegistro').value;
-  let lista = estudiantes;
+  let lista = [...estudiantes];
   if (filtroGrupo !== 'todos') {
-    lista = estudiantes.filter(e => e.grado === filtroGrupo);
+    lista = lista.filter(e => e.grado === filtroGrupo);
   }
-  const ranking = [...lista].sort((a, b) => (b.posSemanales || 0) - (a.posSemanales || 0));
+  const ranking = lista.sort((a, b) => (b.posSemanales || 0) - (a.posSemanales || 0));
   const tituloGrupo = filtroGrupo !== 'todos' ? ` - Grupo ${filtroGrupo}` : ' - Todos';
   let html = `<h2 style="color:#f59e0b;text-align:center;margin-bottom:20px;">🏆 RANKING${tituloGrupo}</h2>
     <table style="width:100%;"><thead><tr style="background:#f59e0b;color:#000;"><th>Pos</th><th>Estudiante</th><th>Grupo</th><th>Positivos</th><th>XP</th></tr></thead><tbody>`;
+  
   ranking.forEach((est,i)=>{
     const medal = i===0?'🥇':i===1?'🥈':i===2?'🥉':(i+1);
     html+=`<tr><td style="font-weight:bold;color:#f59e0b;">${medal}</td><td>${est.nombre}</td><td>${est.grado}</td><td style="color:#4ade80;font-weight:bold;">+${est.posSemanales||0}</td><td style="color:#38bdf8;">+${est.xp||0}</td></tr>`;
   });
+  
   html+='</tbody></table>';
   const modal = document.createElement('div');
   modal.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.9);display:flex;align-items:center;justify-content:center;z-index:1000;';
@@ -308,16 +370,17 @@ function verRanking() {
   document.body.appendChild(modal);
 }
 
-// CONSOLIDADO
 function renderConsolidado() {
   const div = document.getElementById('consolidadoContent');
+  if(!div) return;
   const semana = semanaActual();
   let html = `<h3 style="color:#38bdf8;margin-bottom:16px;">Semana ${semana}</h3><table><thead><tr>
     <th>#</th><th>Nombre</th><th>Grupo</th><th>➕ Pos.</th><th>✱ Neg.</th><th>🚶 Evasiones</th><th>📋 Asistencia</th><th>XP</th></tr></thead><tbody>`;
+  
   estudiantes.forEach((est,i)=>{
     const posS = est.posSemanales||0;
-    const negTot = registros.filter(r=>r.estudianteId===est.id&&r.tipo==='neg'&&r.semana===semana).length;
-    const asisSemanales = registros.filter(r=>r.estudianteId===est.id&&r.tipo==='asistencia'&&r.semana===semana);
+    const negTot = registros.filter(r=>r.estudianteId===est.id && r.tipo==='neg' && r.semana===semana).length;
+    const asisSemanales = registros.filter(r=>r.estudianteId===est.id && r.tipo==='asistencia' && r.semana===semana);
     const presentes = asisSemanales.filter(r=>r.motivo==='PRESENTE').length;
     const ausentes = asisSemanales.filter(r=>r.motivo==='AUSENTE').length;
     const justificadas = asisSemanales.filter(r=>r.motivo==='JUSTIFICADA').length;
@@ -327,35 +390,59 @@ function renderConsolidado() {
   div.innerHTML = html;
 }
 
-// CONFIG
 function renderUmbrales(){
-  document.getElementById('umbralesForm').innerHTML=GRUPOS.map(g=>`<div style="display:flex;align-items:center;gap:12px;margin-bottom:10px;">
+  const container = document.getElementById('umbralesForm');
+  if(!container) return;
+  container.innerHTML=GRUPOS.map(g=>`<div style="display:flex;align-items:center;gap:12px;margin-bottom:10px;">
     <label style="width:52px;font-weight:bold;color:#38bdf8;">${g}</label>
-    <input type="number" id="u_${g}" value="${umbrales[g]||5}" min="1" max="30" style="width:72px;"/>
+    <input type="number" id="u_${g}" value="${umbrales[g]||3}" min="1" max="30" style="width:72px;"/>
   </div>`).join('');
 }
 
 function guardarUmbrales(){
-  GRUPOS.forEach(g=>{umbrales[g]=parseInt(document.getElementById(`u_${g}`).value);});
+  GRUPOS.forEach(g=>{
+    const input = document.getElementById(`u_${g}`);
+    if(input) umbrales[g]=parseInt(input.value) || 3;
+  });
   localStorage.setItem('ag_umbrales',JSON.stringify(umbrales));
-  alert('✅ Guardado');
+  alert('✅ Umbrales guardados con éxito');
+  renderTabla();
 }
 
-// TABS
-function mostrarPanel(id,btn){
-  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
-  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
-  document.getElementById(`panel-${id}`).classList.add('active');
-  btn.classList.add('active');
+function visiblePanel(id, btn) {
+  mostrarPanel(id, btn);
   if(id==='consolidado') renderConsolidado();
   if(id==='config') renderUmbrales();
 }
 
-// INIT
-function init(){
-  cargarDatos();
-  renderTabla();
+function mostrarPanel(id,btn){
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  
+  const targetPanel = document.getElementById(`panel-${id}`);
+  if(targetPanel) targetPanel.classList.add('active');
+  if(btn) btn.classList.add('active');
 }
+
+// INICIALIZACIÓN COMPATIBLE Y ROBUSTA
+window.addEventListener('DOMContentLoaded', () => {
+  cargarDatos();
+  
+  // Asignar listeners de teclado para el Login
+  const p1 = document.getElementById('pass1');
+  const p2 = document.getElementById('pass2');
+  if(p1) p1.addEventListener('keydown', e=>{ if(e.key==='Enter') verificarAcceso(); });
+  if(p2) p2.addEventListener('keydown', e=>{ if(e.key==='Enter') verificarAcceso(); });
+
+  // Comprobar sesión activa anterior
+  if (sessionStorage.getItem('ag_logged') === 'true') {
+    const overlay = document.getElementById('loginOverlay');
+    const main = document.getElementById('mainContent');
+    if(overlay) overlay.style.display = 'none';
+    if(main) main.style.display  = 'block';
+    renderTabla();
+  }
+});
 </script>
 </body>
 </html>
