@@ -274,7 +274,7 @@ function renderTabla() {
   
   if (!lista.length) { tbody.innerHTML='<tr><td colspan="9" class="muted">No hay estudiantes en este grupo</td></tr>'; return; }
 
-  tbody.innerHTML = lista.map((est,idx)=>{
+  tbody.innerHTML = lista.map((est)=>{
     const estIdx = estudiantes.indexOf(est);
     const posS = est.posSemanales||0;
     const negD = registros.filter(r=>r.estudianteId===est.id&&r.tipo==='neg'&&r.fecha===hoy()).length;
@@ -293,18 +293,18 @@ function renderTabla() {
         ${negD >= 3 ? '<br><span style="font-size:0.7rem;color:#fbbf24;">OBSERVADOR</span>' : ''}
       </td>
       <td style="white-space:nowrap;">
-        <button class="btn-teal" style="padding:5px 8px;font-size:0.75rem;" onclick="registrarAsistencia(${idx},'presente')">P</button>
-        <button class="btn-gray" style="padding:5px 8px;font-size:0.75rem;" onclick="registrarAsistencia(${idx},'ausente')">A</button>
-        <button class="btn-amber" style="padding:5px 8px;font-size:0.75rem;" onclick="registrarAsistencia(${idx},'justificada')">J</button>
+        <button class="btn-teal" style="padding:5px 8px;font-size:0.75rem;" onclick="registrarAsistencia(${estIdx},'presente')">P</button>
+        <button class="btn-gray" style="padding:5px 8px;font-size:0.75rem;" onclick="registrarAsistencia(${estIdx},'ausente')">A</button>
+        <button class="btn-amber" style="padding:5px 8px;font-size:0.75rem;" onclick="registrarAsistencia(${estIdx},'justificada')">J</button>
       </td>
       <td style="font-weight:bold;color:#f87171;min-width:120px;">
         <span style="background:rgba(239,68,68,0.3);padding:8px 12px;border-radius:8px;margin-right:6px;font-size:1.1rem;">${est.evasiones||0}</span>
-        <button class="btn-red" style="padding:8px 12px;" onclick="registrarEvasion(${idx})">+</button>
+        <button class="btn-red" style="padding:8px 12px;" onclick="registrarEvasion(${estIdx})">+</button>
       </td>
       <td style="white-space:nowrap;">
-        <button class="btn-green" style="padding:5px 8px;" onclick="addPos(${idx})">+</button>
-        <button class="btn-red" style="padding:5px 8px;" onclick="addNeg(${idx})">*</button>
-        <button class="btn-gray" style="padding:5px 8px;" onclick="eliminar(${idx})">🗑️</button>
+        <button class="btn-green" style="padding:5px 8px;" onclick="addPos(${estIdx})">+</button>
+        <button class="btn-red" style="padding:5px 8px;" onclick="addNeg(${estIdx})">*</button>
+        <button class="btn-gray" style="padding:5px 8px;" onclick="eliminar(${estIdx})">🗑️</button>
       </td>
     </tr>`;
   }).join('');
